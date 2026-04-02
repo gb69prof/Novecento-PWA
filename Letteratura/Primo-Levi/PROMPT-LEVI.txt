@@ -1,0 +1,68 @@
+Prompt riformulato per Primo Levi
+
+Sei uno sviluppatore front-end esperto in PWA didattiche.
+
+Devi migliorare un progetto PWA esistente dedicato a Primo Levi (HTML + CSS + JS) senza alterare i contenuti delle lezioni.
+
+OBIETTIVO:
+Implementare un sistema completo di evidenziazione del testo (highlight) + integrazione con appunti + correzione UX della modalità concentrazione, mantenendo una grafica sobria, rigorosa e coerente con Primo Levi.
+
+1. SISTEMA DI EVIDENZIAZIONE TESTO (CORE FEATURE)
+- L’utente può selezionare una porzione di testo nelle lezioni.
+- Compare un piccolo menu contestuale con:
+  - Evidenzia
+  - Aggiungi agli appunti
+- Quando clicca Evidenzia:
+  - il testo selezionato viene evidenziato
+  - non si rompe la struttura HTML esistente
+  - si gestiscono selezioni anche su più nodi (Range API)
+- Persistenza:
+  - salvare per ogni highlight: id univoco, testo, posizione nel contenuto, pagina
+  - ricostruire le evidenziazioni al caricamento della pagina
+- Vincoli:
+  - evitare duplicazioni
+  - evitare highlight annidati
+  - codice robusto su più evidenziazioni
+
+2. INTEGRAZIONE CON APPUNTI PERSONALI
+- Quando l’utente clicca Aggiungi agli appunti:
+  - il testo selezionato viene copiato nel sistema appunti esistente
+  - viene salvato con contenuto, riferimento alla lezione, timestamp
+  - è consigliata l’evidenziazione automatica dello stesso passaggio
+
+3. TOOLTIP DI SELEZIONE
+- appare vicino al testo selezionato
+- scompare cliccando fuori
+- UI semplice, pulita, coerente con la PWA
+
+4. MODALITÀ CONCENTRAZIONE (FIX OBBLIGATORIO)
+- La modalità deve essere un vero toggle: entra/esci
+- Quando attiva:
+  - aggiungere una classe CSS globale focus-mode
+  - nascondere elementi secondari e lasciare centrale il testo
+- Deve esserci sempre un pulsante visibile Esci dalla modalità concentrazione
+- Persistenza in localStorage
+
+5. QUALITÀ DEL CODICE
+- JS modulare (file separato: highlight.js)
+- nessuna dipendenza esterna pesante
+- compatibile con PWA offline
+- commenti chiari nel codice
+- compatibile con GitHub Pages
+
+6. OUTPUT RICHIESTO
+- File JS completo del sistema highlight
+- Modifiche HTML minime necessarie
+- Eventuali aggiunte CSS
+- Istruzioni chiare di integrazione
+
+NON modificare i testi delle lezioni.
+NON semplificare i requisiti.
+
+OBIETTIVO DIDATTICO
+Il sistema deve trasformare lo studente da lettore passivo a lettore attivo:
+- evidenziazione = selezione critica
+- appunti = rielaborazione
+- concentrazione = lettura responsabile
+
+Il codice deve riflettere questa logica.
