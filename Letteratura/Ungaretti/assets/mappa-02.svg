@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Mappa concettuale: Frattura / sentimento base">
+    <defs>
+      <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f7f0e1"/>
+        <stop offset="55%" stop-color="#efe4cf"/>
+        <stop offset="100%" stop-color="#dfcfad"/>
+      </linearGradient>
+      <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#6b5134" flood-opacity="0.18"/>
+      </filter>
+    </defs>
+    <rect width="1600" height="900" rx="36" fill="url(#bg2)"/>
+    <g fill="none" stroke="#7e6448" stroke-width="5" stroke-linecap="round" opacity="0.85">
+      <path d="M800 450 C650 310, 500 250, 350 235"/>
+      <path d="M800 450 C1000 310, 1140 250, 1270 235"/>
+      <path d="M800 450 C640 560, 500 635, 365 690"/>
+      <path d="M800 450 C995 555, 1135 625, 1265 690"/>
+    </g>
+    <g filter="url(#shadow2)">
+      <rect x="510" y="280" width="580" height="310" rx="40" fill="#fffaf1" stroke="#6c4e31" stroke-width="8"/>
+      <text x="800" y="370" font-family="Georgia, 'Times New Roman', serif" font-size="58" text-anchor="middle" fill="#4c3421" font-weight="700">Ungaretti</text>
+      <text x="800" y="445" font-family="Georgia, 'Times New Roman', serif" font-size="42" text-anchor="middle" fill="#6a5038">Frattura / sentimento base</text>
+      <foreignObject x="580" y="485" width="440" height="90"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial, sans-serif;font-size:24px;line-height:1.3;color:#6b563f;text-align:center;">Guerra, trauma, scomposizione, dolore, memoria.</div></foreignObject>
+    </g>
+    <g filter="url(#shadow2)"><rect x="150" y="150" width="370" height="130" rx="28" fill="#fffdf8" stroke="#8b6d4d" stroke-width="6"/>
+        <text x="335" y="226" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#4c3421" font-weight="700">Dolore</text></g><g filter="url(#shadow2)"><rect x="1080" y="150" width="370" height="130" rx="28" fill="#fffdf8" stroke="#8b6d4d" stroke-width="6"/>
+        <text x="1265" y="226" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#4c3421" font-weight="700">Esperienza</text></g><g filter="url(#shadow2)"><rect x="140" y="610" width="370" height="130" rx="28" fill="#fffdf8" stroke="#8b6d4d" stroke-width="6"/>
+        <text x="325" y="686" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#4c3421" font-weight="700">Evento</text></g><g filter="url(#shadow2)"><rect x="1080" y="610" width="370" height="130" rx="28" fill="#fffdf8" stroke="#8b6d4d" stroke-width="6"/>
+        <text x="1265" y="686" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#4c3421" font-weight="700">Frattura</text></g></svg>
