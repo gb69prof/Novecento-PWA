@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline</title>
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background:#f2f2f2;
+  color:#1a1a1a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  text-align:center;
+}
+.box{
+  background:white;
+  padding:2rem;
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+}
+h1{color:#961B2B;}
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#961B2B">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+</head>
+<body>
+<div class="box">
+<h1>Sei offline</h1>
+<p>L'app è installata ma non c'è connessione.<br>Puoi comunque navigare nelle pagine già caricate.</p>
+</div>
+
+<script src="pwa.js" defer></script>
+
+</body>
+</html>

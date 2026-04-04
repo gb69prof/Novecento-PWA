@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pirandello — Così è (se vi pare)</title>
+  <style>
+    :root{
+      --bg:#0f141a;
+      --panel:rgba(255,255,255,.08);
+      --panel2:rgba(0,0,0,.14);
+      --stroke:rgba(255,255,255,.16);
+      --stroke2:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.90);
+      --muted:rgba(255,255,255,.70);
+      --muted2:rgba(255,255,255,.55);
+      --accent:#f0c36a;
+      --paper:#f4efe6;
+      --ink:#1a1a1a;
+      --shadow: 0 20px 55px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 14px;
+      --font: ui-serif, Georgia, "Times New Roman", Times, serif;
+      --ui: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+      --paperLine: rgba(0,0,0,.06);
+      --paperEdge: rgba(0,0,0,.10);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 800px at 20% 15%, rgba(255,255,255,.12), transparent 55%),
+        radial-gradient(900px 600px at 80% 30%, rgba(240,195,106,.18), transparent 55%),
+        radial-gradient(900px 600px at 50% 90%, rgba(130,200,255,.12), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      font-family:var(--ui);
+      overflow-x:hidden;
+    }
+
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(15,20,26,.82), rgba(15,20,26,.55));
+      border-bottom:1px solid var(--stroke2);
+    }
+    .topbar{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:12px 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width:240px;
+    }
+    .logo{
+      width:36px; height:36px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(240,195,106,.95), rgba(255,255,255,.28));
+      box-shadow: 0 12px 26px rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .brand h2{
+      margin:0; font-size:14px; letter-spacing:.3px; font-weight:800;
+    }
+    .brand small{ display:block; margin-top:2px; color:var(--muted2); font-weight:600; }
+
+    .controls{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s;
+      font-size:13px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+    .btn:active{ transform: translateY(0px); }
+
+    .seg{
+      display:flex;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      overflow:hidden;
+      background: rgba(0,0,0,.18);
+    }
+    .seg button{
+      padding:8px 10px;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      font-weight:800;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .seg button.active{
+      background: rgba(240,195,106,.18);
+      color:var(--text);
+    }
+
+    .slider{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      background: rgba(255,255,255,.06);
+      font-weight:800;
+      color:var(--muted);
+      font-size:12px;
+    }
+    input[type="range"]{ width:120px; }
+
+    .wrap{
+      max-width:1200px;
+      margin: 16px auto 60px;
+      padding:0 14px;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:16px;
+    }
+
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+      .brand{ min-width:auto; }
+      .controls{ justify-content:flex-start; margin-left:0; }
+    }
+
+    /* ====== SIDEBAR ====== */
+    .sidebar{
+      border:1px solid var(--stroke2);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:sticky;
+      top:72px;
+      align-self:start;
+    }
+    .side-inner{ padding:14px; }
+
+    .author-card{
+      border:1px solid var(--stroke2);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(0,0,0,.20);
+      position:relative;
+    }
+    .media-frame{
+      width:100%;
+      aspect-ratio: 4/5;
+      background: rgba(0,0,0,.28);
+      position:relative;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+    .author-card img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      object-position: center;
+      display:block;
+      cursor:pointer;
+    }
+
+    .overlay{
+      position:absolute;
+      left:10px; top:10px;
+      display:flex; gap:6px; flex-wrap:wrap;
+      pointer-events:none;
+    }
+    .badge{
+      font-family:var(--ui);
+      font-size:11px;
+      padding:5px 8px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.18);
+      color:rgba(255,255,255,.88);
+      font-weight:800;
+      letter-spacing:.2px;
+      backdrop-filter: blur(8px);
+    }
+
+    .heygen{
+      width:100%; height:100%;
+      display:none;
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.28);
+    }
+    .heygen iframe{
+      width:100%; height:100%;
+      border:0;
+      display:block;
+    }
+    .media-actions{
+      position:absolute;
+      right:10px; top:10px;
+      z-index:2;
+      display:flex;
+      gap:8px;
+    }
+    .mini-btn{
+      font-family:var(--ui);
+      font-weight:900;
+      font-size:12px;
+      padding:7px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.45);
+      color: rgba(255,255,255,.92);
+      cursor:pointer;
+      backdrop-filter: blur(8px);
+      transition:.18s;
+    }
+    .mini-btn:hover{ transform: translateY(-1px); }
+
+    .author-meta{
+      padding:10px 12px 12px;
+      font-family: var(--ui);
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .author-meta strong{
+      display:block;
+      color: var(--text);
+      font-size:13px;
+      margin-bottom:2px;
+    }
+
+    .side-title{
+      margin:14px 2px 8px;
+      font-family: var(--ui);
+      font-weight:900;
+      letter-spacing:.3px;
+      color: rgba(255,255,255,.86);
+      font-size:13px;
+      text-transform: uppercase;
+    }
+
+    .index{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      padding-bottom:4px;
+    }
+    .index a{
+      text-decoration:none;
+      color: rgba(255,255,255,.85);
+      font-weight:800;
+      font-size:13px;
+      padding:9px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      transition:.18s;
+    }
+    .index a:hover{
+      transform: translateY(-1px);
+      background: rgba(240,195,106,.14);
+      border-color: rgba(240,195,106,.28);
+    }
+
+    /* ====== BOOK/PAGES ====== */
+    .book{
+      border:1px solid var(--stroke2);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .book-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-bottom:1px solid var(--stroke2);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.10));
+      font-family: var(--ui);
+    }
+    .book-top .hint{
+      color: var(--muted2);
+      font-size:12px;
+      font-weight:700;
+    }
+    .book-top .hint b{ color:rgba(255,255,255,.85); }
+
+    .pages{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:0;
+      padding:14px;
+    }
+    .two .pages{
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .two .pages{ grid-template-columns: 1fr; }
+    }
+
+    .page{
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 18px 18px 22px;
+      border:1px solid var(--paperEdge);
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 16px 35px rgba(0,0,0,.22);
+      font-family: var(--font);
+      line-height: 1.55;
+    }
+    .page:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(to bottom, transparent, rgba(0,0,0,.03)),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 26px,
+          var(--paperLine) 27px
+        );
+      pointer-events:none;
+      opacity:.55;
+    }
+    .page-inner{ position:relative; z-index:1; }
+
+    .page h1{
+      font-size: 28px;
+      margin: 2px 0 10px;
+      line-height:1.15;
+      letter-spacing:.2px;
+    }
+    .page h2{
+      font-size: 18px;
+      margin: 18px 0 8px;
+      font-family: var(--ui);
+      letter-spacing:.2px;
+    }
+    .page p{
+      margin: 0 0 12px;
+      font-size: 17px;
+    }
+    .page ul{
+      margin: 6px 0 14px 18px;
+      padding:0;
+    }
+    .page li{ margin: 6px 0; font-size: 16.5px; }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin: 10px 0 12px;
+      font-family: var(--ui);
+    }
+    .meta span{
+      font-size: 12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+      font-weight:800;
+      color: rgba(0,0,0,.72);
+    }
+
+    figure.inline-media{
+      margin: 12px 0 14px;
+      border-radius: 16px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.45);
+      overflow:hidden;
+      box-shadow: 0 10px 22px rgba(0,0,0,.14);
+    }
+    figure.inline-media img.thumb{
+      width:100%;
+      display:block;
+      cursor: zoom-in;
+      max-height: 380px;
+      object-fit: contain;
+      background: rgba(0,0,0,.02);
+    }
+    figure.inline-media figcaption{
+      font-family: var(--ui);
+      font-size: 12px;
+      padding: 10px 12px;
+      color: rgba(0,0,0,.70);
+      border-top:1px solid rgba(0,0,0,.10);
+    }
+
+    .quote{
+      border-left: 4px solid rgba(240,195,106,.85);
+      padding: 10px 12px;
+      margin: 14px 0;
+      background: rgba(240,195,106,.18);
+      border-radius: 12px;
+      font-style: italic;
+      font-size: 16.5px;
+    }
+
+
+    /* ====== ACCORDION (brani a tendina) ====== */
+    details.accordion{
+      margin: 10px 0 14px;
+      border:1px solid rgba(0,0,0,.12);
+      border-radius: 14px;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
+      overflow:hidden;
+    }
+    details.accordion summary{
+      cursor:pointer;
+      list-style:none;
+      padding: 10px 12px;
+      font-family: var(--ui);
+      font-weight: 900;
+      font-size: 13px;
+      color: rgba(0,0,0,.78);
+      background: rgba(240,195,106,.18);
+      border-bottom:1px solid rgba(0,0,0,.10);
+      user-select:none;
+    }
+    details.accordion summary::-webkit-details-marker{ display:none; }
+    details.accordion[open] summary{
+      background: rgba(240,195,106,.26);
+    }
+    .acc-body{ padding: 10px 12px 12px; }
+    .brano{
+      font-family: var(--font);
+      font-size: 16.5px;
+      line-height: 1.55;
+      color: rgba(0,0,0,.92);
+      white-space: normal;
+    }
+
+    /* ====== IMAGE MODAL (zoom/pan/reset + resize) ====== */
+    .img-pop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.75);
+      display:none;
+      z-index:80;
+    }
+    .img-pop.open{ display:block; }
+
+    .img-pop .panel{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      width:min(920px, 92vw);
+      height:min(640px, 80vh);
+      background: rgba(15,20,26,.92);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.60);
+      overflow:hidden;
+    }
+    .pop-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.14);
+      font-family: var(--ui);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+    }
+    .pop-top .title{
+      font-size:12px;
+      letter-spacing:.2px;
+      opacity:.95;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 55%;
+    }
+    .pop-actions{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .pop-actions button{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      padding:7px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+    }
+    .pop-actions button:hover{ background: rgba(255,255,255,.12); }
+    .pop-body{
+      width:100%;
+      height: calc(100% - 52px);
+      position:relative;
+      overflow:hidden;
+      touch-action:none;
+    }
+    .pop-body img{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%) scale(1);
+      transform-origin: center center;
+      user-select:none;
+      -webkit-user-drag:none;
+      max-width:none;
+      max-height:none;
+      cursor: grab;
+    }
+    .pop-body img:active{ cursor: grabbing; }
+
+    .resize-handle{
+      position:absolute;
+      width:18px; height:18px;
+      right:8px; bottom:8px;
+      border-radius: 6px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      cursor: nwse-resize;
+    }
+
+    /* ====== NOTES WINDOW (draggable, autosave, export, per-file key) ====== */
+    .notes{
+      position:fixed;
+      right: 18px;
+      bottom: 18px;
+      width:min(360px, calc(100vw - 28px));
+      height: 320px;
+      background: rgba(15,20,26,.92);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      box-shadow: 0 20px 55px rgba(0,0,0,.55);
+      z-index:60;
+      display:none;
+      overflow:hidden;
+    }
+    .notes.open{ display:block; }
+
+    .notes .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      background: rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.14);
+      font-family: var(--ui);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      cursor:grab;
+      user-select:none;
+    }
+    .notes .bar:active{ cursor:grabbing; }
+    .notes .bar .left{
+      display:flex; gap:8px; align-items:center;
+      font-size:12px;
+      letter-spacing:.2px;
+    }
+    .notes .bar .dot{
+      width:10px; height:10px; border-radius:99px;
+      background: rgba(240,195,106,.95);
+      box-shadow: 0 0 0 2px rgba(240,195,106,.20);
+    }
+    .notes .bar .right{
+      display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .notes .bar button{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      padding:6px 9px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+    }
+    .notes .bar button:hover{ background: rgba(255,255,255,.12); }
+
+    .notes textarea{
+      width:100%;
+      height: calc(100% - 52px);
+      border:0;
+      outline:none;
+      resize:none;
+      background: transparent;
+      color: rgba(255,255,255,.92);
+      padding: 12px 12px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .notes .status{
+      position:absolute;
+      left:12px;
+      bottom:8px;
+      font-family: var(--ui);
+      font-size:11px;
+      color: rgba(255,255,255,.70);
+      pointer-events:none;
+    }
+    .notes .count{
+      position:absolute;
+      right:12px;
+      bottom:8px;
+      font-family: var(--ui);
+      font-size:11px;
+      color: rgba(255,255,255,.70);
+      pointer-events:none;
+    }
+  </style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#961B2B">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+</head>
+<body>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h2>Pirandello — Percorso</h2>
+          <small>Layout quaderno • immagini cliccabili • appunti salvati</small>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="seg" role="tablist" aria-label="Modalità pagine">
+          <button id="onePageBtn" class="active" type="button" aria-selected="true">1 pagina</button>
+          <button id="twoPageBtn" type="button" aria-selected="false">2 pagine</button>
+        </div>
+
+        <div class="slider" title="Dimensione testo">
+          Aa <input id="fontSize" type="range" min="16" max="24" value="18" /> A+
+        </div>
+
+        <button class="btn" id="toggleNotes" aria-pressed="false">📝 Appunti</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- SINISTRA -->
+    <aside class="sidebar">
+      <div class="side-inner">
+
+        <div class="author-card" aria-label="Autore e video">
+          <div class="media-frame" id="mediaFrame">
+            <img id="authorImg" src="assets/IMG_3728.jpeg" alt="Pirandello (clicca per video)" />
+
+            <div class="overlay">
+              <span class="badge">clic sulla foto → video</span>
+              <span class="badge" id="mediaState">foto</span>
+            </div>
+
+            <div class="heygen" id="heygenWrap" aria-hidden="true">
+              <div class="media-actions">
+                
+                <button class="mini-btn" id="toggleAudio" type="button" aria-pressed="true" title="Audio">🔈 Audio</button>
+<button class="mini-btn" id="backToImg" type="button">Torna alla foto</button>
+              </div>
+
+              <iframe
+                id="heygenIframe"
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/9pYdHj98EaU?autoplay=1&mute=0&playsinline=1&rel=0&enablejsapi=1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <div class="author-meta">
+            <strong>Pirandello — Così è (se vi pare)</strong>
+            <span>clic sulla foto → video</span>
+          </div>
+        </div>
+
+        <!-- INDICE -->
+        <div class="side-title">Indice</div>
+        <nav class="index" aria-label="Indice">
+          
+          <a href="Pirandello.html">L’immagine del mondo</a>
+
+          <a href="Umorismo.html">Umorismo</a>
+          <a href="Novelle.html">Novelle</a>
+
+          <a href="Romanzi.html">I romanzi</a>
+          <a href="Mattia.html" style="padding-left:22px;">- Il fu Mattia Pascal</a>
+          <a href="Uno.html" style="padding-left:22px;">- Uno, nessuno e centomila</a>
+
+          <a href="Teatro.html">Il teatro</a>
+          <a href="Cosi.html" style="padding-left:22px; font-weight:800; text-decoration:underline;">- Così è (se vi pare)</a>
+          <a href="Sei.html" style="padding-left:22px;">- Sei personaggi in cerca d’autore</a>
+
+          <a href="Conclusione.html">Conclusione</a>
+
+        </nav>
+
+      </div>
+    </aside>
+
+    <!-- DESTRA -->
+    <section class="book" id="book">
+      <div class="book-top">
+        <div class="hint">
+          <b>Così è (se vi pare)</b> • testo selezionabile • immagini nel flusso (clic → zoom)
+        </div>
+        <div class="hint">Suggerimento: usa “2 pagine” su desktop, “1 pagina” su mobile.</div>
+      </div>
+
+      <div class="pages" id="pages">
+
+        
+        <!-- PAGINA 1 -->
+        <article class="page" id="page1">
+          <div class="page-inner">
+
+            <div class="meta">
+              <span>Commedia (1917)</span>
+              <span>Relatività della verità</span>
+              <span>Incomunicabilità</span>
+              <span>Laudisi</span>
+            </div>
+
+            <h1>Così è (se vi pare)</h1>
+            <p>Questa commedia, tratta dalla novella <i>La signora Frola e il signor Ponza, suo genero</i>, fu rappresentata per la prima volta nel 1917. È una delle opere più celebri di Pirandello e affronta un nodo cardine della sua poetica: la relatività della verità e l’incomunicabilità tra gli individui.</p>
+
+            <h2>Trama</h2>
+            <p>In una cittadina di provincia arriva una famiglia composta dal signor Ponza, la moglie e la suocera, signora Frola. La loro vita suscita subito sospetti: la madre e la figlia non si incontrano mai, mentre Ponza visita ogni giorno la suocera. La comunità, incuriosita, pretende spiegazioni.</p>
+            <p>Il prefetto interroga separatamente Ponza e la Frola, ottenendo due versioni opposte. Ponza sostiene che la sua prima moglie, figlia della Frola, sia morta nel terremoto, e che la suocera, impazzita, creda che la sua attuale moglie sia ancora la figlia defunta. Per pietà, le impedisce di incontrarla. La signora Frola, al contrario, afferma che Ponza è impazzito: la moglie non è morta, ma lui, convinto del contrario, ha costretto tutti a vivere in quell’inganno.</p>
+            <p>Alla fine appare in scena la signora Ponza, velata, che dichiara: «Io sono la figlia della signora Frola… e la seconda moglie del signor Ponza… e per me nessuna, nessuna!». Quando il prefetto le obietta: «Non può essere entrambe», lei risponde con decisione: «Nossignori. Per me, io sono colei che mi si crede».</p>
+
+            <figure class="inline-media">
+              <img class="thumb" src="assets/Cosi1.png" alt="Così è (se vi pare): trama e snodi" data-title="Così è (se vi pare) — trama" />
+              <figcaption>Trama e snodo finale: la verità resta velata e plurale.</figcaption>
+            </figure>
+
+            <h2>Una commedia corale</h2>
+            <p>L’opera è definita una commedia corale perché non ha un protagonista unico. Il portavoce delle idee pirandelliane è Laudisi: interviene solo in alcuni momenti, ma offre la chiave di lettura filosofica.</p>
+
+          </div>
+        </article>
+
+        <!-- PAGINA 2 -->
+        <article class="page" id="page2">
+          <div class="page-inner">
+
+            <h1>Filosofia e poetica</h1>
+
+            <div class="meta">
+              <span>Verità plurali</span>
+              <span>Curiosità borghese</span>
+              <span>Umorismo</span>
+              <span>Identità sfuggente</span>
+            </div>
+
+            <h2>Filosofia dell’incomunicabilità</h2>
+            <p>Attraverso Laudisi, Pirandello mostra che la verità non è unica: ognuno possiede la propria, valida quanto quella degli altri. Questa molteplicità genera incomunicabilità, perché l’uomo moderno non accetta l’idea di verità plurali e soggettive.</p>
+
+            <h2>Critica alla società borghese</h2>
+            <p>La commedia smaschera l’illusione positivista di una realtà unica e oggettiva. Freud aveva già rivelato la complessità della psiche umana, e Pirandello applica questa prospettiva al vivere sociale: esistono tante realtà quanti sono gli individui. La borghesia, però, non accetta questa visione e continua a cercare un’unica certezza.</p>
+
+            <h2>Poetica dell’umorismo</h2>
+            <p>Nell’opera è chiara anche la poetica dell’umorismo. I borghesi vedono nel comportamento della famiglia Ponza solo il lato comico (avvertimento del contrario). Laudisi, invece, rappresenta il sentimento del contrario: comprende la tragicità nascosta e invita a non forzare oltre la ricerca della verità. Ma la curiosità prevale, e la verità si presenta velata, dimessa, sfuggente.</p>
+
+            <h2>Significato</h2>
+            <p><i>Così è (se vi pare)</i> mostra che la verità non è mai assoluta, ma fragile, plurale e relativa. Pirandello mette in scena i limiti delle certezze occidentali, rivelando che la verità non si impone con voce solenne: appare invece discreta, quasi restia, pronta a mostrarsi solo a chi accetta la sua natura sfuggente.</p>
+
+            <figure class="inline-media">
+              <img class="thumb" src="assets/Cosi2.png" alt="Così è (se vi pare): concetti chiave" data-title="Così è (se vi pare) — concetti" />
+              <figcaption>Quadro interpretativo: verità plurale, incomunicabilità, critica al positivismo e umorismo.</figcaption>
+            </figure>
+
+            <h1>L’incomunicabilità e il nuovo eroe pirandelliano nel testo</h1>
+
+            <h2>L’avvertimento del contrario</h2>
+            <p>L’“avvertimento del contrario” entra anche nell’arte attraverso il tema dell’incomunicabilità. Gli attori, non comprendendo fino in fondo il dramma dei personaggi, ne restituiscono soltanto una caricatura. Questo ci fa sorridere, ma non ci consente di coglierne il dolore nascosto.</p>
+
+            <h2>Critica al positivismo</h2>
+            <p>Pirandello polemizza con il positivismo, che pretende di giungere alla verità attraverso l’analisi dei fatti. La verità, per lo scrittore, non si trova nei dati esteriori, ma nell’animo degli individui. Si ribalta così il concetto stesso di verità: non più conoscibile attraverso la scienza, ma comprensibile solo mediante l’introspezione.</p>
+
+            <details class="accordion">
+              <summary>Apri il brano — Dialogo (archivi, prove, “dati di fatto”)</summary>
+              <div class="acc-body">
+                <div class="brano">SIRELLI – Ebbene?<br>
+AGAZZI – Niente.<br>
+SIRELLI – Non si trova niente?<br>
+AGAZZI – Tutto disperso o distrutto: Municipio, archivio, stato civile.<br>
+SIRELLI – Ma la testimonianza almeno di qualche superstite?<br>
+AGAZZI – Non si ha notizia di superstiti; e se pure ce ne sono, ricerche difficilissime, ormai!<br>
+SIRELLI – Cosicché non ci resta che da credere all&#x27;uno o da credere all&#x27;altra, così, senza prove?<br>
+AGAZZI – Purtroppo!<br>
+LAUDISI – Volete seguire il mio consiglio? Credete a tutti e due.<br>
+AGAZZI – Sì, e come –<br>
+SIRELLI – se l&#x27;una ti dice bianco e l&#x27;altro nero?<br>
+LAUDISI – E allora non credete a nessuno dei due!<br>
+SIRELLI – Tu vuoi scherzare. Mancano le prove, i dati di fatto; ma la verità, perdio, sarà da una parte o dall&#x27;altra!<br>
+LAUDISI – I dati di fatto, già! Che vorresti desumerne?<br>
+AGAZZI – Ma scusa! L&#x27;atto di morte della figliuola, per esempio, se la signora Frola è lei la pazza (purtroppo non si trova più, perché non si trova più nulla), ma doveva esserci; si potrebbe trovare domani; e allora – trovato quest&#x27;atto – è chiaro che avrebbe ragione lui, il genero.<br>
+SIRELLI – Potresti negar l&#x27;evidenza, se domani quest&#x27;atto ti venisse presentato?<br>
+LAUDISI – Io? Ma non nego nulla io! Me ne guardo bene! Voi, non io, avete bisogno dei dati di fatto, dei documenti, per affermare o negare! Io non so che farmene, perché per me la realtà non consiste in essi, ma nell&#x27;animo di quei due, in cui non posso figurarmi d&#x27;entrare, se non per quel tanto che essi me ne dicono.<br>
+SIRELLI – Benissimo! E non dicono appunto che uno dei due è pazzo? O pazza lei, o pazzo lui: di qui non si scappa! Quale dei due?<br>
+AGAZZI – È qui la questione!<br>
+LAUDISI – Prima di tutto, non è vero che lo dicano entrambi. Lo dice lui, il signor Ponza, di sua suocera. La signora Frola lo nega, non soltanto per sé, ma anche per lui. Se mai, lui – dice – fu un po&#x27; alterato di mente per soverchio amore. Ma ora, sano, sanissimo.<br>
+SIRELLI, AGAZZI, LAUDISI – Ah dunque tu propendi, come me, verso ciò che dice lei, la suocera? Certo che, stando a ciò che dice lei, si può spiegar tutto benissimo. Ma si può spiegar tutto ugualmente, stando a ciò che dice lui, il genero!<br>
+SIRELLI – E allora – pazzo – nessuno dei due? Ma uno dev&#x27;essere, perdio!<br>
+LAUDISI – E chi dei due? Non potete dirlo voi, come non può dirlo nessuno. E non già perché codesti dati di fatto, che andate cercando, siano stati annullati – dispersi o distrutti – da un accidente qualsiasi – un incendio, un terremoto – no; ma perché li hanno annullati essi in sé, nell&#x27;animo loro, volete capirlo? Creando lei a lui, o lui a lei, un fantasma che ha la stessa consistenza della realtà, dov&#x27;essi vivono ormai in perfetto accordo, pacificati. E non potrà essere distrutta, questa loro realtà, da nessun documento, poiché essi ci respirano dentro, la vedono, la sentono, la toccano! – Al più, per voi potrebbe servire il documento, per levarvi voi una sciocca curiosità. Vi manca, ed eccovi dannati al meraviglioso supplizio d&#x27;aver davanti, accanto, qua il fantasma e qua la realtà, e di non poter distinguere l&#x27;uno dall&#x27;altra!</div>
+              </div>
+            </details>
+
+            <h2>Filosofia dell’incomunicabilità</h2>
+            <p>La realtà è molto più complessa di quanto appare: ha infinite facce, ma ciascuno ne vede soltanto una e la considera l’unica verità. Questo genera l’incomunicabilità, poiché ognuno giudica dal proprio punto di vista senza riconoscere la validità della prospettiva altrui.</p>
+
+            <details class="accordion">
+              <summary>Apri il brano — Dialogo (fantasmi, identità, sguardo degli altri)</summary>
+              <div class="acc-body">
+                <div class="brano">LAUDISI – Oh, eccoti qua! Eh caro! Chi è il pazzo di noi due? Eh, lo so: io dico “tu”, e tu col dito indichi me. Va’ là, che così a tu per tu, ci conosciamo bene noi due! Il guaio è che, come ti vedo io, non ti vedono gli altri! E allora, caro mio, che diventi tu? Dico per me che, qua di fronte a te, mi vedo e mi tocco. Tu, per come ti vedono gli altri, che diventi? Un fantasma, caro, un fantasma! Eppure, vedi questi pazzi? Senza badare al fantasma che portano con sé, in se stessi, vanno correndo, pieni di curiosità, dietro il fantasma altrui! E credono che sia una cosa diversa.<br>
+CAMERIERE – Signor Lamberto.<br>
+LAUDISI – Eh?<br>
+CAMERIERE – Ci sono due signore. La signora Cini e un’altra.<br>
+LAUDISI – Vogliono me?<br>
+CAMERIERE – Hanno chiesto della signora. Ho detto che si trovava a visita dalla signora Frola qua accanto, e allora...<br>
+LAUDISI – Allora?<br>
+CAMERIERE – “Ah sì? ah sì?” – e si sono guardate negli occhi; poi hanno battuto le manine coi guanti, friggendo, e mi hanno domandato se non c’era proprio nessuno in casa.<br>
+LAUDISI – Tu avrai risposto che non c’era nessuno.<br>
+CAMERIERE – Ho risposto che c’era lei.<br>
+LAUDISI – Io? No. Quello che conoscono loro, semmai!<br>
+CAMERIERE – (più che mai sbalordito) Come dice?<br>
+LAUDISI – Ma, scusa, ti pare lo stesso?<br>
+CAMERIERE – (tentando squallidamente un sorriso a bocca aperta) Non capisco.<br>
+LAUDISI – Con chi stai parlando tu?<br>
+CAMERIERE – (basito) Come... con chi sto parlando?... Con lei.<br>
+LAUDISI – E sei proprio sicuro che io sia lo stesso di quello che chiedono codeste signore?<br>
+CAMERIERE – Ma... non saprei... Hanno detto il fratello della signora...<br>
+LAUDISI – Caro! Ah... Eh sì, allora sono io; sono io... Falle entrare, falle entrare.</div>
+              </div>
+            </details>
+
+            <h2>Sociologia dell’incomunicabilità</h2>
+            <p>Il problema non riguarda solo l’individuo, ma si estende alla società. Le relazioni sociali si basano su visioni parziali, che si scontrano fra loro senza possibilità di sintesi. La società borghese, figlia del positivismo, pretende un’oggettività che non esiste più: la realtà è creata dai singoli e varia con le loro esperienze.</p>
+
+            <details class="accordion">
+              <summary>Apri il brano — Dialogo (cambio d’immagine, “io sono come mi vedi”)</summary>
+              <div class="acc-body">
+                <div class="brano">LAUDISI: Ma no, signori miei! Non v&#x27;ingannate nessuno dei due. Permettete? Ve lo dimostro. – Tutt&#x27;e due, qua, vedete me. – Mi vedete, è vero?<br>
+SIRELLI: Eh sfido!<br>
+LAUDISI: No no. Vieni qua, vieni qua...<br>
+SIRELLI: (gli s&#x27;appressa, sorridente, come per prestarsi a uno scherzo) Perché?<br>
+LAUDISI: Vedimi meglio. Toccami. Così, bravo. – Tu sei sicuro di toccarmi come mi vedi, è vero?<br>
+SIRELLI: Direi...<br>
+LAUDISI: Non puoi dubitare di te, sfido! – Ora, scusi, venga qua lei, signora... No no, ecco, vengo io da lei...<br>
+(Le si fa davanti, si piega su un ginocchio)<br>
+Mi vede, è vero? Alzi una manina; mi tocchi... – Cara manina!<br>
+SIRELLI: Ohè... ohè...<br>
+LAUDISI: Non gli dia retta! – È sicura anche lei di toccarmi come mi vede? Non può dubitare di lei. – Ma per carità, non dica a suo marito, né a mia sorella, né a mia nipote, né alla signora qua, come mi vede, perché tutt&#x27;e quattro altrimenti le diranno che lei s&#x27;inganna. Mentre lei non s&#x27;inganna affatto! Perché io sono realmente come mi vede lei! – Ma ciò non toglie che io sia anche realmente come mi vede suo marito, mia sorella, mia nipote e la signora qua, che anche loro non si ingannano affatto!<br>
+SIGNORA SIRELLI: E come, dunque, lei cambia dall&#x27;uno all&#x27;altro?<br>
+LAUDISI: Ma sicuro che cambio, signora mia! E lei no, forse? Non cambia?<br>
+SIGNORA SIRELLI: (precipitosamente) Ah no no no no no. Le assicuro che per me io non cambio affatto!<br>
+LAUDISI: E neanch&#x27;io per me, creda! E dico che voi tutti v&#x27;ingannate se non mi vedete come mi vedo io! Ma ciò non toglie che non sia una bella presunzione tanto la mia che la sua, cara signora.<br>
+SIRELLI: Ma che ci ha da vedere tutto questo, scusa?<br>
+LAUDISI: Come no? Vi vedo così affannati a cercar di sapere chi sono gli altri e le cose come sono, quasi che gli altri e le cose per se stessi fossero così o così...<br>
+SIGNORA SIRELLI: Ma secondo lei allora non si potrà mai sapere la verità?<br>
+SIGNORA CINI: Se non dobbiamo più credere neppure a ciò che si vede e si tocca!<br>
+LAUDISI: Ma sì, ci creda, signora! Perciò le dico: rispetti ciò che vedono e toccano gli altri, anche se sia il contrario!<br>
+SIGNORA SIRELLI: Oh, senta! io le volto le spalle e non parlo più con lei! Non voglio impazzire!<br>
+LAUDISI: No, no: basta! Seguitate, seguitate a parlare della Signora Frola e del signor Ponza suo genero – non v&#x27;interrompo più.<br>
+AMALIA: Ah, Dio sia ringraziato! E faresti meglio, caro Lamberto, se te ne andassi di là!<br>
+DINA: Di là; di là, zietto... sì, sì...<br>
+LAUDISI: Perché? No. Mi diverto a sentirvi parlare. Starò zitto, non dubitate. Al più – se permettete – farò qualche risata.<br>
+SIGNORA SIRELLI: E dire che noi eravamo venute per sapere... – Ma scusi: suo marito, signora, non è un superiore di questo signor Ponza?<br>
+AMALIA: Altro è l&#x27;ufficio, altro la casa, signora.<br>
+SIGNORA SIRELLI: Capisco, già! – Ma loro non hanno neppure tentato di vedere la suocera qua accanto?<br>
+DINA: Altro che! Due volte, signora!<br>
+SIGNORA CINI: Ah dunque... dunque loro le hanno parlato?<br>
+AMALIA: Non siamo state ricevute, signora mia!<br>
+SIRELLI, SIGNORA SIRELLI, SIGNORA CINI: Oh! oh! – Come! – Come mai!<br>
+DINA: Anche questa mattina...<br>
+AMALIA: La prima volta restammo più d&#x27;un quarto d&#x27;ora dietro la porta. Nessuno venne ad aprirci, e non si poté neppure lasciare un biglietto di visita... Siamo tornate oggi...<br>
+DINA: (con un gesto colle mani che esprime spavento) È venuto ad aprirci lui!<br>
+SIGNORA SIRELLI: È la faccia... già! La faccia di quest&#x27;uomo che sconcerta tutto il paese! E poi, così, vestito di nero... Sono tutti e tre vestiti di nero, anche la signora, è vero? la figlia?<br>
+SIRELLI: (con fastidio) Ma se la figlia non l&#x27;ha mai veduta nessuno! Te l&#x27;ho detto mille volte! Sarà vestita di nero anche lei... – Sono d&#x27;un paesello della Marsica – lo sanno questo?<br>
+AMALIA: Sì; distrutto, pare, totalmente...<br>
+SIRELLI: Di pianta, raso al suolo, dal terremoto.<br>
+DINA: Hanno perduto tutti i parenti, si dice...<br>
+SIGNORA CINI: (con ansia di riattaccare il discorso interrotto) Bene; dunque dunque... – ha aperto lui?<br>
+AMALIA: Appena me lo sono veduto davanti, con quella faccia, non mi son più trovata in gola la voce per dirgli che venivamo per una visita alla suocera. Niente, sa? neanche un ringraziamento.<br>
+DINA: No, per questo, fece un inchino...<br>
+AMALIA: Ma appena... così col capo.<br>
+DINA: Gli occhi, piuttosto, devi dire! Quelli sono gli occhi d&#x27;una belva, non d&#x27;un uomo.<br>
+SIGNORA CINI: E allora? Che ha detto allora?<br>
+DINA: Tutto imbarazzato...<br>
+AMALIA: ...tutto arruffato, ci ha detto che la suocera era indisposta... che ci ringraziava dell&#x27;attenzione... e rimase lì su la soglia, in attesa che ci ritirassimo...<br>
+DINA: Che mortificazione!<br>
+SIRELLI: Un vero sgarbo! Ma può esser sicura che è lui, sa? Forse terrà sotto chiave anche la suocera!<br>
+SIGNORA SIRELLI: Ci vuol coraggio! Con una signora, moglie d&#x27;un suo superiore!<br>
+AMALIA: Ah, ma mio marito, sa, l&#x27;ha presa come una grave mancanza di riguardo ed è andato a rinzelarsene fortemente col Prefetto, pretendendo una riparazione.<br>
+DINA: Oh, giusto, eccolo qua, il babbo!</div>
+              </div>
+            </details>
+
+            <h2>Il sentimento del contrario</h2>
+            <p>Un esempio evidente è la famiglia Ponza: a prima vista la situazione è comica (madre e figlia che non si incontrano mai, mentre il genero visita ogni giorno la suocera). Ma la riflessione ci spinge oltre, facendoci intuire la tragedia che si cela dietro a quel comportamento: il dolore per una perdita. È questo il sentimento del contrario, che trasforma il riso in compassione.</p>
+
+            <h2>Il nuovo eroe: il “nessuno”</h2>
+            <p>L’incomunicabilità, unita alla filosofia del flusso vitale, porta alla nascita del nuovo eroe pirandelliano: il “nessuno”. È colui che ha smarrito la propria identità, soffocata dalle maschere sociali. Non potendo mai essere “uno” soltanto, e ridotto a “centomila” immagini diverse, l’uomo moderno non può che scoprirsi “nessuno”.</p>
+
+            <details class="accordion">
+              <summary>Apri il brano — Dialogo finale (la Signora Ponza velata)</summary>
+              <div class="acc-body">
+                <div class="brano">SIGNORA PONZA: Non temete! Non temete! Andate via.<br>
+PONZA: Andiamo, sì, andiamo...<br>
+SIGNORA FROLA: Sì, sì... andiamo, caro, andiamo...<br>
+SIGNORA PONZA: Che altro possono volere da me, dopo questo, lor signori? Qui c&#x27;è una sventura, come vedono, che deve restar nascosta, perché solo così può valere il rimedio che la pietà le ha prestato.<br>
+IL PREFETTO: Ma noi vogliamo rispettare la pietà, signora. Vorremmo però che lei ci dicesse –<br>
+SIGNORA PONZA: Che cosa? La verità? È solo questa: che io sono, sì, la figlia della signora Frola –<br>
+TUTTI: Ah!<br>
+SIGNORA PONZA: – e la seconda moglie del signor Ponza –<br>
+TUTTI: Oh! E come?<br>
+SIGNORA PONZA: Sì; e per me nessuna! Nessuna!<br>
+IL PREFETTO: Ah, no, per sé, lei, signora: sarà l&#x27;una o l&#x27;altra!<br>
+SIGNORA PONZA: Nossignori. Per me, io sono colei che mi si crede.</div>
+              </div>
+            </details>
+
+            <h2>Vocabolario dei termini chiave</h2>
+            <ul>
+              <li><b>Relatività della verità:</b> tema centrale della commedia; la verità non è unica e oggettiva, ma molteplice e soggettiva.</li>
+              <li><b>Incomunicabilità:</b> incapacità degli individui di comprendersi, poiché ognuno possiede la propria verità personale.</li>
+              <li><b>Curiosità borghese:</b> atteggiamento dei personaggi secondari, che cercano di scoprire la verità come fosse un dato oggettivo.</li>
+              <li><b>Laudisi:</b> portavoce delle idee pirandelliane; evidenzia la natura plurale e sfuggente della realtà.</li>
+              <li><b>Signora Ponza:</b> figura enigmatica che incarna l’impossibilità di stabilire un’identità univoca; «io sono colei che mi si crede».</li>
+              <li><b>Maschera sociale:</b> rappresentazione esteriore che ciascuno indossa davanti agli altri, mai coincidente con l’essere autentico.</li>
+              <li><b>Avvertimento del contrario:</b> livello comico della vicenda, basato sul contrasto fra apparenza e realtà.</li>
+              <li><b>Sentimento del contrario:</b> riflessione più profonda che rivela la tragicità nascosta dietro il riso.</li>
+            </ul>
+
+            <h2>Saperi irrinunciabili</h2>
+            <ol>
+              <li>L’opera, tratta dalla novella <i>La signora Frola e il signor Ponza, suo genero</i>, fu rappresentata nel 1917 e affronta il tema della relatività della verità.</li>
+              <li>La trama ruota attorno al contrasto tra il signor Ponza e la signora Frola, che danno versioni opposte della stessa vicenda familiare.</li>
+              <li>La comparsa della signora Ponza, velata, conferma l’enigma: «Io sono colei che mi si crede». L’identità resta indeterminata.</li>
+              <li>Laudisi spiega la filosofia pirandelliana: la verità non è unica, ma plurale, e proprio per questo diventa impossibile comunicare davvero.</li>
+              <li>La commedia smaschera le certezze della società borghese, figlia del positivismo, convinta dell’esistenza di una verità oggettiva.</li>
+              <li>Si manifesta la poetica dell’umorismo: la vicenda appare comica (avvertimento del contrario) ma rivela una realtà tragica (sentimento del contrario).</li>
+              <li>Pirandello mostra che la verità non si impone in modo assoluto, ma resta fragile, relativa, e sempre filtrata dallo sguardo soggettivo.</li>
+              <li>L’opera rappresenta uno dei punti più alti della riflessione pirandelliana sull’identità e sull’incomunicabilità.</li>
+            </ol>
+
+          </div>
+        </article>
+
+</div>
+    </section>
+  </div>
+
+  <!-- IMAGE POPUP -->
+  <div class="img-pop" id="imgPop" aria-hidden="true">
+    <div class="panel" id="popPanel" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
+      <div class="pop-top">
+        <div class="title" id="popTitle">Immagine</div>
+        <div class="pop-actions">
+          <button type="button" id="zoomIn">Zoom +</button>
+          <button type="button" id="zoomOut">Zoom −</button>
+          <button type="button" id="resetPop">Reset</button>
+          <button type="button" id="closePop">Chiudi</button>
+        </div>
+      </div>
+      <div class="pop-body" id="popBody">
+        <img id="popImg" alt="Immagine" />
+        <div class="resize-handle" id="popResize" title="Ridimensiona finestra"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="notes" id="notesWin" aria-hidden="true">
+    <div class="bar" id="notesDrag" title="Trascina la finestra">
+      <div class="left">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Appunti</span>
+      </div>
+      <div class="right">
+        <button type="button" id="exportTxt">Export .txt</button>
+        <button type="button" id="clearNotes">Pulisci</button>
+        <button type="button" id="closeNotes">Chiudi</button>
+      </div>
+    </div>
+    <textarea id="notesText" placeholder="Scrivi qui… (autosave)"></textarea>
+    <div class="status" id="status">Salvato</div>
+    <div class="count" id="counter">0 caratteri</div>
+  </div>
+
+  <script>
+    // ====== INDICE ======
+    document.querySelectorAll('.index a').forEach(a=>{
+      a.addEventListener('click',(e)=>{
+        const href=a.getAttribute('href');
+        if(!href || !href.startsWith('#')) return;
+        const target=document.querySelector(href);
+        if(!target) return;
+        e.preventDefault();
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // ====== 2 PAGINE ======
+    const onePageBtn=document.getElementById('onePageBtn');
+    const twoPageBtn=document.getElementById('twoPageBtn');
+    function setMode(two){
+      document.getElementById('book').classList.toggle('two', two);
+      onePageBtn.classList.toggle('active', !two);
+      twoPageBtn.classList.toggle('active', two);
+      onePageBtn.setAttribute('aria-selected', (!two).toString());
+      twoPageBtn.setAttribute('aria-selected', (two).toString());
+    }
+    onePageBtn.addEventListener('click',()=>setMode(false));
+    twoPageBtn.addEventListener('click',()=>setMode(true));
+
+    // ====== FONT SIZE ======
+    const fontSize=document.getElementById('fontSize');
+    function applyFont(){
+      const size=fontSize.value;
+      document.querySelectorAll('.page p, .page li').forEach(el=>el.style.fontSize = size+'px');
+      document.querySelectorAll('.page h1').forEach(el=>el.style.fontSize = (parseInt(size)+10)+'px');
+    }
+    fontSize.addEventListener('input', applyFont);
+    applyFont();
+
+    // ====== IMAGE POPUP (zoom/pan/reset + resize) ======
+    const imgPop=document.getElementById('imgPop');
+    const popImg=document.getElementById('popImg');
+    const popTitle=document.getElementById('popTitle');
+    const closePop=document.getElementById('closePop');
+    const zoomIn=document.getElementById('zoomIn');
+    const zoomOut=document.getElementById('zoomOut');
+    const resetPop=document.getElementById('resetPop');
+    const popBody=document.getElementById('popBody');
+    const popPanel=document.getElementById('popPanel');
+    const popResize=document.getElementById('popResize');
+
+    let pscale=1, ptx=0, pty=0;
+    let pdrag={active:false, x:0, y:0};
+
+    const clamp=(n,min,max)=>Math.max(min, Math.min(max,n));
+    const applyPopTransform=()=> {
+      popImg.style.transform = `translate(calc(-50% + ${ptx}px), calc(-50% + ${pty}px)) scale(${pscale})`;
+    };
+
+    function openImagePop(src,title){
+      popImg.src=src;
+      popTitle.textContent=title || 'Immagine';
+      pscale=1; ptx=0; pty=0; applyPopTransform();
+
+      imgPop.classList.add('open');
+      imgPop.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    }
+    function closeImagePop(){
+      imgPop.classList.remove('open');
+      imgPop.setAttribute('aria-hidden','true');
+      document.body.style.overflow='';
+      popImg.src='';
+    }
+
+    document.querySelectorAll('img.thumb').forEach(img=>{
+      img.addEventListener('click', ()=>{
+        openImagePop(img.getAttribute('src'), img.dataset.title || img.alt);
+      });
+    });
+
+    closePop.addEventListener('click', closeImagePop);
+    imgPop.addEventListener('click', (e)=>{ if(e.target===imgPop) closeImagePop(); });
+
+    zoomIn.addEventListener('click', ()=>{ pscale=clamp(pscale*1.15, .6, 6); applyPopTransform(); });
+    zoomOut.addEventListener('click', ()=>{ pscale=clamp(pscale/1.15, .6, 6); applyPopTransform(); });
+    resetPop.addEventListener('click', ()=>{ pscale=1; ptx=0; pty=0; applyPopTransform(); });
+
+    popBody.addEventListener('wheel', (e)=>{
+      e.preventDefault();
+      const delta = Math.sign(e.deltaY);
+      if(delta>0) pscale = clamp(pscale/1.12, .6, 6);
+      else pscale = clamp(pscale*1.12, .6, 6);
+      applyPopTransform();
+    }, {passive:false});
+
+    popBody.addEventListener('pointerdown',(e)=>{
+      if(e.target===popResize) return;
+      pdrag.active=true;
+      pdrag.x=e.clientX;
+      pdrag.y=e.clientY;
+      popBody.setPointerCapture(e.pointerId);
+    });
+    popBody.addEventListener('pointermove',(e)=>{
+      if(!pdrag.active) return;
+      const dx=e.clientX-pdrag.x, dy=e.clientY-pdrag.y;
+      pdrag.x=e.clientX; pdrag.y=e.clientY;
+      ptx += dx; pty += dy;
+      applyPopTransform();
+    });
+    popBody.addEventListener('pointerup',()=>pdrag.active=false);
+    popBody.addEventListener('pointercancel',()=>pdrag.active=false);
+
+    // Resize panel
+    let presize={active:false, startX:0, startY:0, startW:0, startH:0};
+    popResize.addEventListener('pointerdown',(e)=>{
+      presize.active=true;
+      presize.startX=e.clientX; presize.startY=e.clientY;
+      const r=popPanel.getBoundingClientRect();
+      presize.startW=r.width; presize.startH=r.height;
+      popResize.setPointerCapture(e.pointerId);
+    });
+    popResize.addEventListener('pointermove',(e)=>{
+      if(!presize.active) return;
+      const dx=e.clientX-presize.startX, dy=e.clientY-presize.startY;
+      popPanel.style.width  = clamp(presize.startW+dx, 320, window.innerWidth-16) + 'px';
+      popPanel.style.height = clamp(presize.startH+dy, 240, window.innerHeight-16) + 'px';
+    });
+    popResize.addEventListener('pointerup',()=>presize.active=false);
+    popResize.addEventListener('pointercancel',()=>presize.active=false);
+
+    // ====== FOTO → VIDEO (solo nella sidebar) ======
+    const authorImg = document.getElementById('authorImg');
+    const heygenWrap = document.getElementById('heygenWrap');
+    const heygenIframe = document.getElementById('heygenIframe');
+    const backToImg = document.getElementById('backToImg');
+    const mediaState = document.getElementById('mediaState');
+
+    
+
+    // ====== AUDIO (YouTube) ======
+    const toggleAudioBtn = document.getElementById('toggleAudio');
+    let audioMuted = false; // di default: audio attivo
+
+    function updateAudioBtn(){
+      if(!toggleAudioBtn) return;
+      toggleAudioBtn.textContent = audioMuted ? '🔇 Audio' : '🔈 Audio';
+      // aria-pressed=true = "attivo" (audio ON)
+      toggleAudioBtn.setAttribute('aria-pressed', String(!audioMuted));
+    }
+
+    function ytCommand(func, args){
+      try{
+        if(!heygenIframe || !heygenIframe.contentWindow) return;
+        heygenIframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: func,
+          args: args || []
+        }), '*');
+      }catch(e){}
+    }
+
+    function applyAudioState(){
+      // prova a sincronizzare lo stato del player
+      ytCommand(audioMuted ? 'mute' : 'unMute');
+      updateAudioBtn();
+    }
+
+    if(toggleAudioBtn){
+      updateAudioBtn();
+      toggleAudioBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        audioMuted = !audioMuted;
+        applyAudioState();
+      });
+    }
+const REAL_SRC = heygenIframe.getAttribute('src');
+    heygenIframe.dataset.src = REAL_SRC;
+    heygenIframe.src = "about:blank";
+
+    function showVideo(){
+      heygenIframe.src = heygenIframe.dataset.src;
+      heygenWrap.style.display = "block";
+      heygenWrap.setAttribute("aria-hidden","false");
+      authorImg.style.visibility = "hidden";
+      mediaState.textContent = "video";
+      // sincronizza audio dopo il caricamento del player
+      setTimeout(applyAudioState, 650);
+      // prova anche a far partire (se l’autoplay viene bloccato, resta comunque cliccabile)
+      setTimeout(()=>ytCommand("playVideo"), 700);
+    }
+    function showImage(){
+      heygenIframe.src = "about:blank";
+      heygenWrap.style.display = "none";
+      heygenWrap.setAttribute("aria-hidden","true");
+      authorImg.style.visibility = "visible";
+      mediaState.textContent = "foto";
+      // quando torni alla foto, riportiamo l’audio in stato "attivo" per la prossima apertura
+      audioMuted = false;
+      updateAudioBtn();
+    }
+
+    authorImg.addEventListener('click', showVideo);
+    backToImg.addEventListener('click', showImage);
+
+    // ====== APPUNTI ======
+    const toggleNotes=document.getElementById('toggleNotes');
+    const notesWin=document.getElementById('notesWin');
+    const notesDrag=document.getElementById('notesDrag');
+    const notesText=document.getElementById('notesText');
+    const closeNotes=document.getElementById('closeNotes');
+    const exportTxt=document.getElementById('exportTxt');
+    const clearNotes=document.getElementById('clearNotes');
+    const statusEl=document.getElementById('status');
+    const counter=document.getElementById('counter');
+
+    const NOTES_KEY = `mw_notes::${location.pathname}`;
+    const POS_KEY = `mw_notes_pos::${location.pathname}`;
+
+    function openNotes(){ notesWin.classList.add('open'); toggleNotes.setAttribute('aria-pressed','true'); notesText.focus(); }
+    function closeNotesWin(){ notesWin.classList.remove('open'); toggleNotes.setAttribute('aria-pressed','false'); }
+
+    toggleNotes.addEventListener('click', ()=> notesWin.classList.contains('open') ? closeNotesWin() : openNotes());
+    closeNotes.addEventListener('click', closeNotesWin);
+
+    const saved=localStorage.getItem(NOTES_KEY);
+    if(saved!==null) notesText.value=saved;
+
+    function updateCounter(){ counter.textContent = `${notesText.value.length} caratteri`; }
+    updateCounter();
+
+    let saveTimer=null;
+    notesText.addEventListener('input', ()=>{
+      updateCounter();
+      statusEl.textContent='Scrivendo…';
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(()=>{
+        localStorage.setItem(NOTES_KEY, notesText.value);
+        statusEl.textContent='Salvato';
+      }, 350);
+    });
+
+    exportTxt.addEventListener('click', ()=>{
+      const blob=new Blob([notesText.value], {type:'text/plain;charset=utf-8'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      const base=(location.pathname.split('/').pop()||'appunti').replace('.html','');
+      a.download = `${base}-appunti.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+    });
+
+    clearNotes.addEventListener('click', ()=>{
+      if(!confirm('Vuoi cancellare gli appunti di questa lezione?')) return;
+      notesText.value='';
+      localStorage.removeItem(NOTES_KEY);
+      updateCounter();
+      statusEl.textContent='Cancellato';
+    });
+
+    // Drag + save position
+    let ndrag={active:false, startX:0, startY:0, startLeft:0, startTop:0};
+    const posSaved=localStorage.getItem(POS_KEY);
+    if(posSaved){
+      try{
+        const p=JSON.parse(posSaved);
+        notesWin.style.left = p.left+'px';
+        notesWin.style.top  = p.top+'px';
+        notesWin.style.right='auto';
+        notesWin.style.bottom='auto';
+      }catch(e){}
+    }
+
+    notesDrag.addEventListener('pointerdown',(e)=>{
+      ndrag.active=true;
+      const r=notesWin.getBoundingClientRect();
+      ndrag.startX=e.clientX; ndrag.startY=e.clientY;
+      ndrag.startLeft=r.left; ndrag.startTop=r.top;
+      notesDrag.setPointerCapture(e.pointerId);
+      notesWin.style.left=r.left+'px';
+      notesWin.style.top=r.top+'px';
+      notesWin.style.right='auto'; notesWin.style.bottom='auto';
+    });
+    notesDrag.addEventListener('pointermove',(e)=>{
+      if(!ndrag.active) return;
+      const dx=e.clientX-ndrag.startX, dy=e.clientY-ndrag.startY;
+      const r=notesWin.getBoundingClientRect(), w=r.width, h=r.height;
+      notesWin.style.left = clamp(ndrag.startLeft+dx, 8, window.innerWidth-w-8) + 'px';
+      notesWin.style.top  = clamp(ndrag.startTop +dy, 8, window.innerHeight-h-8) + 'px';
+    });
+    notesDrag.addEventListener('pointerup', ()=>{
+      if(!ndrag.active) return;
+      ndrag.active=false;
+      const r=notesWin.getBoundingClientRect();
+      localStorage.setItem(POS_KEY, JSON.stringify({left: Math.round(r.left), top: Math.round(r.top)}));
+    });
+    notesDrag.addEventListener('pointercancel', ()=>ndrag.active=false);
+
+    // Close popup with ESC
+    window.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape'){
+        if(imgPop.classList.contains('open')) closeImagePop();
+        if(notesWin.classList.contains('open')) closeNotesWin();
+        showImage();
+      }
+    });
+  </script>
+
+<script src="pwa.js" defer></script>
+
+</body>
+</html>

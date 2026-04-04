@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Luigi Pirandello</title>
+
+  <style>
+    :root{
+      --bg:#0f141a;
+      --card:#1d2630;
+      --cardHover:#263444;
+      --border:#324050;
+      --text:#e8edf5;
+      --muted:rgba(232,237,245,.75);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .layout{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px 16px;
+      display:grid;
+      grid-template-columns: 1fr 340px;
+      gap:18px;
+    }
+
+    .index{
+      display:grid;
+      gap:10px;
+    }
+
+    a.card{
+      display:block;
+      padding:12px 14px;
+      border-radius:14px;
+      background:var(--card);
+      color:var(--text);
+      text-decoration:none;
+      border:1px solid var(--border);
+      transition:all .12s ease;
+    }
+
+    a.card:hover{
+      background:var(--cardHover);
+      transform:translateY(-1px);
+    }
+
+    a.card span{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .portrait{
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.25);
+    }
+
+    .portrait img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    @media (max-width: 860px){
+      .layout{grid-template-columns:1fr}
+    }
+  </style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#961B2B">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+</head>
+
+<body>
+  <main class="layout">
+
+    <section class="index">
+      <a class="card" href="Pirandello.html">Visione del mondo<span>Vita, forma, maschera</span></a>
+      <a class="card" href="Umorismo.html">L'umorismo<span>Avvertimento del contrario</span></a>
+      <a class="card" href="Mattia.html">Il fu Mattia Pascal<span>Identità e fuga</span></a>
+      <a class="card" href="Uno.html">Uno, nessuno e centomila<span>Frantumazione dell’io</span></a>
+      <a class="card" href="Cosi.html">Così è (se vi pare)<span>Relatività del vero</span></a>
+      <a class="card" href="Sei.html">Sei personaggi in cerca d'autore<span>Teatro e realtà</span></a>
+      <a class="card" href="Novelle.html">Novelle<span>Il laboratorio del quotidiano</span></a>
+      <a class="card" href="Romanzi.html">Romanzi<span>Strutture e ossessioni</span></a>
+      <a class="card" href="Teatro.html">Teatro<span>Forma scenica e conflitto</span></a>
+      <a class="card" href="Conclusione.html">Conclusione<span>Il filo che resta</span></a>
+    </section>
+
+    <aside class="portrait">
+      <img src="assets/Pirandello-ritratto.png" alt="Luigi Pirandello">
+    </aside>
+
+  </main>
+
+<script src="pwa.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pirandello — Il fu Mattia Pascal</title>
+  <style>
+    :root{
+      --bg:#0f141a;
+      --panel:rgba(255,255,255,.08);
+      --panel2:rgba(0,0,0,.14);
+      --stroke:rgba(255,255,255,.16);
+      --stroke2:rgba(255,255,255,.12);
+      --text:#e8edf5;
+
+      --paper:#ffffff;
+      --ink:#12161c;
+      --shadow:0 14px 40px rgba(0,0,0,.28);
+      --radius:18px;
+
+      --serif:ui-serif, Georgia, "Times New Roman", Times, serif;
+      --sans:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1100px 800px at 20% 10%, rgba(43,124,255,.18), transparent 60%),
+        radial-gradient(1100px 800px at 85% 15%, rgba(139,92,246,.18), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      font-family:var(--sans);
+    }
+
+    header{
+      position:sticky; top:0; z-index:50;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; padding:12px 14px;
+      backdrop-filter:blur(10px);
+      background:rgba(15,20,26,.70);
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .crumb{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px;}
+    .crumb a{color:#f4f7ff; text-decoration:none; border-bottom:1px solid rgba(255,255,255,.18); padding-bottom:2px;}
+    .crumb a:hover{border-bottom-color:rgba(255,255,255,.42);}
+    .sep{color:rgba(232,237,245,.55);}
+
+    .toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:#f4f7ff;
+      padding:9px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .btn:hover{background:rgba(255,255,255,.10);}
+    .btn[aria-pressed="true"]{background:rgba(43,124,255,.18); border-color:rgba(43,124,255,.35);}
+    .pill{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); font-size:12px;}
+    input[type="range"]{width:150px;}
+
+    .wrap{
+      max-width:1180px;
+      margin:0 auto;
+      padding:16px 14px 22px;
+      box-sizing:border-box;
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+
+    .sidebar{
+      position:sticky; top:66px;
+      border-radius:var(--radius);
+      background:var(--panel);
+      border:1px solid var(--stroke);
+      box-shadow:0 14px 40px rgba(0,0,0,.20);
+      backdrop-filter:blur(10px);
+      overflow:visible;
+    }
+    .side-inner{padding:12px;}
+
+    .author-card{
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+    }
+    .media-frame{
+      position:relative;
+      width:100%;
+      height:340px;
+      background:rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .media-frame img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center;
+      display:block;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-drag:none;
+      background:#0b0f14;
+    }
+    .media-frame .overlay{
+      position:absolute; inset:auto 0 0 0;
+      display:flex; align-items:flex-end; justify-content:space-between;
+      padding:10px;
+      pointer-events:none;
+      background:linear-gradient(to top, rgba(0,0,0,.60), transparent 70%);
+      color:#fff;
+      font-size:12px;
+      font-family:var(--sans);
+    }
+    .badge{
+      pointer-events:none;
+      padding:6px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(8px);
+    }
+    .media-actions{
+      position:absolute;
+      top:10px; right:10px;
+      display:flex; gap:8px;
+      z-index:5;
+    }
+    .mini-btn{
+      pointer-events:auto;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      padding:7px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:12px;
+      font-family:var(--sans);
+      user-select:none;
+    }
+    .mini-btn:hover{background:rgba(255,255,255,.14);}
+
+    .heygen{
+      position:absolute; inset:0;
+      display:none;
+      background:#000;
+    }
+    .heygen iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    .author-meta{padding:10px 10px 12px; color:rgba(255,255,255,.86); font-size:13px; line-height:1.35;}
+    .author-meta strong{display:block; font-size:14px;}
+    .author-meta span{color:rgba(255,255,255,.68); font-size:12px;}
+
+    .side-title{
+      margin:12px 2px 8px;
+      font-size:13px;
+      color:rgba(255,255,255,.78);
+      text-transform:uppercase;
+      letter-spacing:.8px;
+    }
+
+    .index{
+      background:var(--panel2);
+      border:1px solid var(--stroke2);
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .index a{
+      display:block;
+      padding:10px 12px;
+      color:rgba(255,255,255,.92);
+      text-decoration:none;
+      font-size:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .index a:first-child{border-top:0;}
+    .index a:hover{background:rgba(255,255,255,.06);}
+
+    .pages{display:grid; grid-template-columns:1fr; gap:14px;}
+    .pages.two{grid-template-columns:1fr 1fr;}
+
+    .page{
+      background:var(--paper);
+      color:var(--ink);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(18,22,28,.08);
+      overflow:hidden;
+      position:relative;
+      min-height:560px;
+    }
+    .page::before{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg, rgba(0,0,0,.06), transparent 20%, transparent 80%, rgba(0,0,0,.06));
+      opacity:.22; pointer-events:none;
+    }
+    .page-inner{
+      padding:30px 32px 34px;
+      position:relative; z-index:1;
+      font-family:var(--serif);
+      font-size:18px;
+      line-height:1.65;
+    }
+    .page h1{margin:0 0 10px; font-size:28px;}
+    .page h2{margin:18px 0 8px; font-size:20px;}
+
+    figure.inline-media{margin:12px 0 16px; border:1px solid rgba(18,22,28,.10); border-radius:14px; overflow:hidden; background:#f8fafc;}
+    figure.inline-media img{width:100%; height:auto; display:block; cursor:zoom-in;}
+    figure.inline-media figcaption{font-family:var(--sans); font-size:12px; color:#394455; padding:8px 10px; border-top:1px solid rgba(18,22,28,.08); background:#fff;}
+
+    .meta{
+      font-family:var(--sans);
+      font-size:12px;
+      color:#5b6676;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .note{
+      font-family:var(--sans);
+      font-size:13px;
+      line-height:1.45;
+      color:#1a2430;
+      border-left:3px solid rgba(43,124,255,.55);
+      background:rgba(43,124,255,.08);
+      padding:10px 12px;
+      border-radius:12px;
+      margin:12px 0 16px;
+    }
+
+    .humor-title{
+      text-align:center;
+      font-family:var(--serif);
+      font-weight:700;
+      font-size:28px;
+      margin:6px 0 16px;
+      letter-spacing:.3px;
+    }
+    .humor-frame{
+      border-radius:16px;
+      border:1px solid rgba(18,22,28,.10);
+      background:linear-gradient(180deg, #fff, #fbfbfb);
+      padding:14px;
+    }
+    .humor-top{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    .humor-box{
+      border-radius:14px;
+      border:2px solid rgba(199,147,58,.55);
+      background:#fffdf7;
+      overflow:hidden;
+    }
+    .humor-box .hb-head{
+      font-family:var(--sans);
+      font-weight:800;
+      text-align:center;
+      padding:10px 10px 8px;
+      color:#7a5618;
+      background:linear-gradient(180deg, rgba(199,147,58,.18), rgba(199,147,58,.06));
+      border-bottom:1px solid rgba(18,22,28,.08);
+    }
+    .humor-box .hb-body{
+      padding:12px 12px 14px;
+      font-family:var(--serif);
+      font-size:17px;
+      line-height:1.55;
+      color:#1c2430;
+    }
+    .humor-arrow{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 0 2px;
+      color:#c06b18;
+      font-family:var(--sans);
+      font-weight:700;
+      gap:10px;
+      user-select:none;
+    }
+    .humor-arrow .hline{
+      height:3px;
+      background:rgba(192,107,24,.45);
+      border-radius:99px;
+      flex:1;
+      max-width:180px;
+    }
+    .humor-down{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 0 8px;
+      color:#c06b18;
+      font-weight:900;
+      font-size:24px;
+      user-select:none;
+    }
+    .humor-bottom{
+      margin-top:10px;
+      border-color:rgba(184,75,58,.58);
+      background:#fff6f3;
+    }
+    .humor-bottom .hb-head{
+      color:#8f2f27;
+      background:linear-gradient(180deg, rgba(184,75,58,.18), rgba(184,75,58,.06));
+    }
+    .humor-bottom .hb-body{font-size:17px;}
+
+    .quote{
+      border-left:4px solid rgba(43,124,255,.35);
+      padding:10px 14px;
+      border-radius:12px;
+      background:rgba(43,124,255,.06);
+      margin:12px 0 16px;
+      font-size:16px;
+      line-height:1.6;
+    }
+    .small{font-family:var(--sans); font-size:12px; color:#5b6676;}
+
+    .pop{
+      position:fixed; left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      width:min(920px,92vw);
+      height:min(640px,80vh);
+      z-index:80;
+      display:none;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      backdrop-filter:blur(10px);
+      overflow:hidden;
+    }
+    .pop.open{display:grid; grid-template-rows:auto 1fr;}
+    .pop-top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      background:rgba(0,0,0,.25);
+      border-bottom:1px solid rgba(255,255,255,.12);
+      cursor:grab; user-select:none;
+    }
+    .pop-top:active{cursor:grabbing;}
+    .pop-title{font-family:var(--sans); font-size:13px; color:rgba(255,255,255,.92); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    .pop-actions{display:flex; gap:8px; flex-wrap:wrap;}
+    .iconbtn{border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:#fff; border-radius:12px; padding:8px 10px; cursor:pointer; font-size:12px; user-select:none;}
+    .iconbtn:hover{background:rgba(255,255,255,.12);}
+    .pop-body{position:relative; overflow:hidden; background:rgba(255,255,255,.06);}
+    .stage{position:absolute; inset:0; overflow:hidden; touch-action:none;}
+    .pop-img{
+      position:absolute; left:50%; top:50%;
+      transform:translate(-50%,-50%) scale(1);
+      transform-origin:center;
+      cursor:grab;
+      max-width:none;
+      width:1200px;
+      height:auto;
+      user-select:none;
+      -webkit-user-drag:none;
+      border-radius:14px;
+      box-shadow:0 14px 40px rgba(0,0,0,.35);
+      touch-action:none;
+    }
+    .pop-img:active{cursor:grabbing;}
+    .resize-handle{position:absolute; right:8px; bottom:8px; width:18px; height:18px; border-radius:6px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.26); cursor:nwse-resize; touch-action:none;}
+
+    .notes{
+      position:fixed; right:22px; bottom:22px;
+      width:min(520px, calc(100vw - 44px));
+      height:320px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      backdrop-filter:blur(10px);
+      z-index:90;
+      display:none;
+      overflow:hidden;
+    }
+    .notes.open{display:grid; grid-template-rows:auto 1fr auto;}
+    .notes-top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      background:rgba(0,0,0,.25);
+      border-bottom:1px solid rgba(255,255,255,.12);
+      cursor:grab; user-select:none;
+    }
+    .notes-top:active{cursor:grabbing;}
+    .notes-title strong{font-size:13px; color:rgba(255,255,255,.92); font-family:var(--sans);}
+    .notes-body{padding:10px 12px; background:rgba(255,255,255,.06);}
+    .notes-text{
+      width:100%; height:100%; box-sizing:border-box; resize:none;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.20);
+      color:rgba(255,255,255,.92);
+      font-family:var(--mono);
+      font-size:13px;
+      line-height:1.45;
+      padding:10px 12px;
+      outline:none;
+    }
+    .notes-bottom{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      border-top:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      font-family:var(--sans);
+      font-size:12px;
+      color:rgba(255,255,255,.75);
+    }
+
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr;}
+      .sidebar{position:relative; top:0;}
+      .pages.two{grid-template-columns:1fr;}
+      input[type="range"]{width:140px;}
+      .notes{right:14px; bottom:14px; width:calc(100vw - 28px);}
+      .media-frame{height:320px;}
+      .humor-top{grid-template-columns:1fr;}
+      .humor-arrow{display:none;}
+    }
+  </style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#961B2B">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+</head>
+
+<body>
+  <header>
+    <div class="crumb">
+      <a href="index.html" title="Home">Home</a>
+      <span class="sep">→</span>
+      <a href="Pirandello.html" title="Pirandello">Pirandello</a>
+      <span class="sep">→</span>
+      <span style="font-weight:700;">Il fu Mattia Pascal</span>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" id="toggleTwo" aria-pressed="false">↔︎ 2 pagine</button>
+      <div class="pill" title="Dimensione del testo">A− <input id="font" type="range" min="15" max="24" value="18" /> A+</div>
+      <button class="btn" id="toggleNotes" aria-pressed="false">📝 Appunti</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- SINISTRA -->
+    <aside class="sidebar">
+      <div class="side-inner">
+
+        <div class="author-card" aria-label="Autore e video">
+          <div class="media-frame" id="mediaFrame">
+            <img id="authorImg" src="assets/Mattia-Pirandello.jpeg.png" alt="Pirandello (clicca per video)" />
+
+            <div class="overlay">
+              <span class="badge">clic sulla foto → video</span>
+              <span class="badge" id="mediaState">foto</span>
+            </div>
+
+            <div class="heygen" id="heygenWrap" aria-hidden="true">
+              <div class="media-actions">
+                
+                <button class="mini-btn" id="toggleAudio" type="button" aria-pressed="true" title="Audio">🔈 Audio</button>
+<button class="mini-btn" id="backToImg" type="button">Torna alla foto</button>
+              </div>
+
+              <iframe
+                id="heygenIframe"
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/iVvGlZ-rriM?si=lgEuPJhZNv0FFWXE&autoplay=1&mute=0&playsinline=1&rel=0&enablejsapi=1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <div class="author-meta">
+            <strong>Luigi Pirandello</strong>
+            <span>clic sulla foto → video</span>
+          </div>
+        </div>
+
+        <!-- INDICE -->
+        <div class="side-title">Indice</div>
+        <nav class="index" aria-label="Indice">
+          <a href="Pirandello.html">L’immagine del mondo</a>
+
+          <a href="Umorismo.html">Umorismo</a>
+          <a href="Novelle.html">Novelle</a>
+
+          <a href="Romanzi.html">I romanzi</a>
+          <a href="Mattia.html" style="padding-left:22px; font-weight:800; text-decoration:underline;">- Il fu Mattia Pascal</a>
+          <a href="Uno.html" style="padding-left:22px;">- Uno, nessuno e centomila</a>
+
+          <a href="Teatro.html">Il teatro</a>
+          <a href="Cosi.html" style="padding-left:22px;">- Così è (se vi pare)</a>
+          <a href="Sei.html" style="padding-left:22px;">- Sei personaggi in cerca d’autore</a>
+
+          <a href="Conclusione.html">Conclusione</a>
+        </nav>
+
+      </div>
+    </aside>
+
+    <!-- DESTRA -->
+    <main class="pages" id="pages">
+      <!-- PAGINA 1 -->
+      <article class="page" id="page1">
+                <div class="page-inner">
+          <div class="humor-title">Il fu Mattia Pascal</div>
+
+          <div class="humor-frame">
+
+            <div class="humor-top">
+              <section class="humor-box">
+                <div class="hb-head">Contesto</div>
+                <div class="hb-body">
+                  <p style="margin:0;">
+                    Pubblicato a puntate (1904) su “Nuova Antologia”, scritto quasi sempre di notte mentre Pirandello vegliava la moglie malata.
+                    In volume nel 1910.
+                  </p>
+                </div>
+              </section>
+
+              <section class="humor-box">
+                <div class="hb-head">Snodo narrativo</div>
+                <div class="hb-body">
+                  <p style="margin:0;">
+                    Fuga → Montecarlo → “morte” per errore → nuova identità (<em>Adriano Meis</em>) → ritorno impossibile.
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            <div class="humor-down" aria-hidden="true">
+              <span>Crisi d’identità</span>
+              <span>Doppio</span>
+              <span>Maschera / forma</span>
+              <span>Libertà-paradosso</span>
+            </div>
+
+          </div>
+
+          <h1>Genesi e pubblicazione</h1>
+          <p>
+            Per far fronte alla precaria situazione economica della sua famiglia, Pirandello accettò di scrivere un romanzo per la rivista “Nuova Antologia”, che lo pubblicò a puntate tra l’aprile e il giugno del 1904. L’autore lo compose quasi sempre di notte, mentre vegliava la moglie gravemente malata e senza un piano prestabilito.
+          </p>
+          <p>
+            L’opera uscì poi integralmente nel 1910.
+          </p>
+
+          <h1>Trama</h1>
+          <p>
+            Mattia Pascal, nato in una famiglia benestante e rimasto presto orfano, vede andare in rovina il proprio patrimonio a causa dei furti dell’amministratore. È costretto ad accettare, per misericordia, un posto di bibliotecario comunale e a condurre una vita monotona e mortificante, resa ancor più pesante dalle continue angherie della suocera. Alla morte dell’unica figlia, esasperato, decide di fuggire.
+          </p>
+          <p>
+            A Montecarlo vince una somma ingente al Casinò e, durante il viaggio, scopre leggendo un giornale che nel suo paese lo credono morto: un cadavere non identificato è stato riconosciuto come il suo dalla moglie. Mattia coglie allora l’occasione per rifarsi una vita: assume il nome di Adriano Meis e si dedica a viaggi e nuove esperienze. Ben presto, però, si accorge che vivere senza una vera identità legale è impossibile: non può sposare la giovane donna che ha conosciuto, né denunciare un furto subito.
+          </p>
+          <p>
+            Decide allora di simulare il suicidio di Adriano Meis e tornare al paese nei panni di Mattia Pascal. Ma al ritorno scopre che la moglie si è risposata e che la sua vecchia vita non lo attende più. Rassegnato, si stabilisce con una zia, vivendo da spettatore e scrivendo le proprie memorie.
+          </p>
+          <p>
+            Ogni tanto depone fiori sulla tomba che porta il suo nome, pur contenendo i resti di un altro. A chi gli chiede chi sia, risponde: “Io sono il fu Mattia Pascal.”
+          </p>
+
+          <figure class="inline-media">
+            <img class="thumb" src="assets/Mattia1.png" alt="Schema riassuntivo de Il fu Mattia Pascal" data-title="Schema riassuntivo" />
+            <figcaption>Schema visivo: contesto, svolta, conseguenze e ritorno.</figcaption>
+          </figure>
+
+          <h1>Significato e ricezione</h1>
+          <p>
+            Con questo romanzo Pirandello segnò il passaggio dal naturalismo ottocentesco al romanzo di introspezione psicologica. L’opera suscitò discussioni ma ebbe grande successo, consacrando l’autore non solo in Italia: fu subito tradotta in francese e in tedesco, aprendo a Pirandello la strada della notorietà europea.
+          </p>
+        </div>
+      </article>
+
+      <!-- PAGINA 2 -->
+      <article class="page" id="page2">
+                <div class="page-inner">
+          <h1>Lettura secondo l’immagine del mondo e la poetica</h1>
+
+          <div class="meta">
+            <span>Mondo senza centro</span>
+            <span>Identità come costruzione</span>
+            <span>Poetica dell’umorismo</span>
+            <span>Esito: “fu”</span>
+          </div>
+
+          <figure class="inline-media">
+            <img class="thumb" src="assets/Mattia2.png" alt="Lettura secondo l’immagine del mondo e la poetica" data-title="Immagine del mondo e poetica" />
+            <figcaption>Quadro interpretativo: forme necessarie, mito dell’autenticità, paradosso della libertà.</figcaption>
+          </figure>
+
+          <p>
+            Il fu Mattia Pascal è il primo grande laboratorio narrativo in cui Pirandello mette alla prova la sua immagine del mondo: un mondo privo di centro, instabile, in cui l’identità non è un’essenza ma una costruzione fragile, dipendente dallo sguardo degli altri e dalle forme sociali. La vicenda di Mattia non è una storia di libertà conquistata, ma il racconto di un’illusione: credere che basti cambiare nome per cambiare vita.
+          </p>
+          <p>
+            L’episodio della “morte per errore” non apre a una rinascita autentica, ma svela un paradosso fondamentale: fuori dalla forma sociale non c’è vita, ma un vuoto giuridico e umano. Adriano Meis, l’uomo senza passato e senza documenti, scopre che la libertà assoluta coincide con l’impotenza.
+          </p>
+          <p>
+            Senza una maschera riconosciuta, l’individuo non può agire, amare, difendersi. Pirandello rovescia così il mito romantico dell’autenticità: non siamo prigionieri delle forme, ma non possiamo esistere senza di esse.
+          </p>
+          <p>
+            Qui si innesta pienamente la poetica dell’umorismo. Il romanzo non chiede al lettore di compatire Mattia, ma di cogliere lo scarto tra ciò che egli crede di essere e ciò che inevitabilmente diventa.
+          </p>
+          <p>
+            Il comico iniziale (la fuga, il colpo di fortuna, il cambio d’identità) si trasforma in sentimento del contrario: dietro l’apparente liberazione emerge la tragedia silenziosa di un uomo che, liberandosi di una maschera, ne perde tutte. L’immagine del mondo pirandelliana è qui esplicita: l’uomo moderno è decentrato, minuscolo, gettato in un universo che non gli garantisce senso né stabilità.
+          </p>
+          <p>
+            La celebre invettiva contro Copernico, nella premessa filosofica, non è nostalgia del passato, ma consapevolezza amara: da quando l’uomo ha perso il centro dell’universo, ha perso anche la possibilità di fondare un’identità solida. Restano solo ruoli provvisori, narrazioni di sé, forme che imprigionano e allo stesso tempo rendono possibile l’esistenza.
+          </p>
+          <p>
+            Il finale, con Mattia ridotto a “fu”, è coerente e spietato: egli non è più vivo come individuo sociale, ma non è nemmeno davvero morto. È un sopravvissuto alla propria identità, uno spettatore della vita altrui.
+          </p>
+          <p>
+            Pirandello suggerisce così che non esiste una via d’uscita definitiva: ogni tentativo di evasione dalla forma si risolve in una nuova, più sottile, esclusione. L’unica libertà concessa è la lucidità amara di chi guarda il gioco dall’esterno, senza più crederci davvero.
+          </p>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <!-- POPUP IMMAGINI -->
+  <div class="pop" id="imgPop" role="dialog" aria-modal="true" aria-label="Immagine">
+    <div class="pop-top" id="popDrag">
+      <div class="pop-title" id="popTitle">Immagine</div>
+      <div class="pop-actions">
+        <button class="iconbtn" id="popZoomOut">−</button>
+        <button class="iconbtn" id="popZoomIn">+</button>
+        <button class="iconbtn" id="popReset">Reset</button>
+        <button class="iconbtn" id="popClose">Chiudi</button>
+      </div>
+    </div>
+    <div class="pop-body">
+      <div class="stage" id="popStage">
+        <img id="popImg" class="pop-img" alt="Immagine zoomabile" />
+      </div>
+      <div class="resize-handle" id="popResize" title="Ridimensiona"></div>
+    </div>
+  </div>
+
+  <!-- APPUNTI -->
+  <section class="notes" id="notesWin" aria-label="Finestra appunti">
+    <div class="notes-top" id="notesDrag">
+      <div class="notes-title"><strong>Appunti</strong></div>
+      <div class="pop-actions">
+        <button class="iconbtn" id="exportTxt">Export .txt</button>
+        <button class="iconbtn" id="clearNotes">Svuota</button>
+        <button class="iconbtn" id="closeNotes">Chiudi</button>
+      </div>
+    </div>
+    <div class="notes-body">
+      <textarea class="notes-text" id="notesText" placeholder="Scrivi qui i tuoi appunti… (si salvano da soli)"></textarea>
+    </div>
+    <div class="notes-bottom">
+      <div id="status">Pronto</div>
+      <div id="counter">0 caratteri</div>
+    </div>
+  </section>
+
+  <script>
+    // ====== INDICE ======
+    document.querySelectorAll('.index a').forEach(a=>{
+      a.addEventListener('click',(e)=>{
+        const href=a.getAttribute('href');
+        if(!href || !href.startsWith('#')) return;
+        const target=document.querySelector(href);
+        if(!target) return;
+        e.preventDefault();
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // ====== 2 PAGINE ======
+    const pages=document.getElementById('pages');
+    const toggleTwo=document.getElementById('toggleTwo');
+    let twoPages=false;
+    toggleTwo.addEventListener('click',()=>{
+      twoPages=!twoPages;
+      pages.classList.toggle('two', twoPages);
+      toggleTwo.setAttribute('aria-pressed', String(twoPages));
+      toggleTwo.textContent = twoPages ? '↔︎ 1 pagina' : '↔︎ 2 pagine';
+    });
+
+    // ====== FONT SIZE ======
+    const font=document.getElementById('font');
+    font.addEventListener('input',()=>{
+      const px=Number(font.value);
+      document.querySelectorAll('.page-inner').forEach(el=>el.style.fontSize=px+'px');
+    });
+
+    // ====== POPUP IMMAGINI ======
+    const imgPop=document.getElementById('imgPop');
+    const popDrag=document.getElementById('popDrag');
+    const popResize=document.getElementById('popResize');
+    const popTitle=document.getElementById('popTitle');
+    const popImg=document.getElementById('popImg');
+    const popStage=document.getElementById('popStage');
+    const popClose=document.getElementById('popClose');
+    const popReset=document.getElementById('popReset');
+    const popZoomIn=document.getElementById('popZoomIn');
+    const popZoomOut=document.getElementById('popZoomOut');
+
+    let pscale=1, ptx=0, pty=0;
+    let pdrag={active:false, startX:0, startY:0, startLeft:0, startTop:0};
+    let presize={active:false, startX:0, startY:0, startW:0, startH:0};
+    let imgPan={active:false, startX:0, startY:0, startTx:0, startTy:0};
+
+    const clamp=(n,min,max)=>Math.max(min, Math.min(max,n));
+    const applyPopTransform=()=> {
+      popImg.style.transform = `translate(calc(-50% + ${ptx}px), calc(-50% + ${pty}px)) scale(${pscale})`;
+    };
+
+    function openImagePop(src,title){
+      popImg.src=src;
+      popTitle.textContent=title || 'Immagine';
+      pscale=1; ptx=0; pty=0; applyPopTransform();
+
+      imgPop.style.width='min(920px, 92vw)';
+      imgPop.style.height='min(640px, 80vh)';
+      imgPop.style.left='50%';
+      imgPop.style.top='50%';
+      imgPop.style.transform='translate(-50%,-50%)';
+      imgPop.classList.add('open');
+      popClose.focus();
+    }
+    function closeImagePop(){
+      imgPop.classList.remove('open');
+      imgPan.active=false; pdrag.active=false; presize.active=false;
+    }
+
+    document.querySelectorAll('img.thumb').forEach(img=>{
+      img.addEventListener('click', ()=>openImagePop(img.src, img.dataset.title || img.alt || 'Immagine'));
+    });
+
+    popClose.addEventListener('click', closeImagePop);
+    popReset.addEventListener('click', ()=>{pscale=1; ptx=0; pty=0; applyPopTransform();});
+    popZoomIn.addEventListener('click', ()=>{pscale=Math.min(6, +(pscale+0.2).toFixed(2)); applyPopTransform();});
+    popZoomOut.addEventListener('click', ()=>{pscale=Math.max(0.6, +(pscale-0.2).toFixed(2)); applyPopTransform();});
+
+    popStage.addEventListener('wheel',(e)=>{
+      if(!imgPop.classList.contains('open')) return;
+      e.preventDefault();
+      const d=Math.sign(e.deltaY);
+      pscale = d>0 ? Math.max(0.6, +(pscale-0.12).toFixed(2)) : Math.min(6, +(pscale+0.12).toFixed(2));
+      applyPopTransform();
+    }, {passive:false});
+
+    popImg.addEventListener('pointerdown',(e)=>{
+      imgPan.active=true;
+      imgPan.startX=e.clientX; imgPan.startY=e.clientY;
+      imgPan.startTx=ptx; imgPan.startTy=pty;
+      popImg.setPointerCapture(e.pointerId);
+    });
+    popImg.addEventListener('pointermove',(e)=>{
+      if(!imgPan.active) return;
+      const dx=e.clientX-imgPan.startX, dy=e.clientY-imgPan.startY;
+      ptx=imgPan.startTx+dx; pty=imgPan.startTy+dy;
+      applyPopTransform();
+    });
+    popImg.addEventListener('pointerup',()=>imgPan.active=false);
+    popImg.addEventListener('pointercancel',()=>imgPan.active=false);
+
+    popDrag.addEventListener('pointerdown',(e)=>{
+      pdrag.active=true;
+      popDrag.setPointerCapture(e.pointerId);
+      const r=imgPop.getBoundingClientRect();
+      pdrag.startX=e.clientX; pdrag.startY=e.clientY;
+      pdrag.startLeft=r.left; pdrag.startTop=r.top;
+      imgPop.style.left=r.left+'px';
+      imgPop.style.top=r.top+'px';
+      imgPop.style.transform='none';
+    });
+    popDrag.addEventListener('pointermove',(e)=>{
+      if(!pdrag.active) return;
+      const dx=e.clientX-pdrag.startX, dy=e.clientY-pdrag.startY;
+      const r=imgPop.getBoundingClientRect(), w=r.width, h=r.height;
+      imgPop.style.left = clamp(pdrag.startLeft+dx, 8, window.innerWidth-w-8) + 'px';
+      imgPop.style.top  = clamp(pdrag.startTop +dy, 8, window.innerHeight-h-8) + 'px';
+    });
+    popDrag.addEventListener('pointerup',()=>pdrag.active=false);
+    popDrag.addEventListener('pointercancel',()=>pdrag.active=false);
+
+    popResize.addEventListener('pointerdown',(e)=>{
+      presize.active=true;
+      popResize.setPointerCapture(e.pointerId);
+      const r=imgPop.getBoundingClientRect();
+      presize.startX=e.clientX; presize.startY=e.clientY;
+      presize.startW=r.width; presize.startH=r.height;
+    });
+    popResize.addEventListener('pointermove',(e)=>{
+      if(!presize.active) return;
+      const dx=e.clientX-presize.startX, dy=e.clientY-presize.startY;
+      imgPop.style.width  = clamp(presize.startW+dx, 320, window.innerWidth-16) + 'px';
+      imgPop.style.height = clamp(presize.startH+dy, 240, window.innerHeight-16) + 'px';
+    });
+    popResize.addEventListener('pointerup',()=>presize.active=false);
+    popResize.addEventListener('pointercancel',()=>presize.active=false);
+
+    // ====== FOTO → VIDEO (solo nella sidebar) ======
+    const authorImg = document.getElementById('authorImg');
+    const heygenWrap = document.getElementById('heygenWrap');
+    const heygenIframe = document.getElementById('heygenIframe');
+    const backToImg = document.getElementById('backToImg');
+    const mediaState = document.getElementById('mediaState');
+
+    
+
+    // ====== AUDIO (YouTube) ======
+    const toggleAudioBtn = document.getElementById('toggleAudio');
+    let audioMuted = false; // di default: audio attivo
+
+    function updateAudioBtn(){
+      if(!toggleAudioBtn) return;
+      toggleAudioBtn.textContent = audioMuted ? '🔇 Audio' : '🔈 Audio';
+      // aria-pressed=true = "attivo" (audio ON)
+      toggleAudioBtn.setAttribute('aria-pressed', String(!audioMuted));
+    }
+
+    function ytCommand(func, args){
+      try{
+        if(!heygenIframe || !heygenIframe.contentWindow) return;
+        heygenIframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: func,
+          args: args || []
+        }), '*');
+      }catch(e){}
+    }
+
+    function applyAudioState(){
+      // prova a sincronizzare lo stato del player
+      ytCommand(audioMuted ? 'mute' : 'unMute');
+      updateAudioBtn();
+    }
+
+    if(toggleAudioBtn){
+      updateAudioBtn();
+      toggleAudioBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        audioMuted = !audioMuted;
+        applyAudioState();
+      });
+    }
+const REAL_SRC = heygenIframe.getAttribute('src');
+    heygenIframe.dataset.src = REAL_SRC;
+    heygenIframe.src = "about:blank";
+
+    function showVideo(){
+      heygenIframe.src = heygenIframe.dataset.src;
+      heygenWrap.style.display = "block";
+      heygenWrap.setAttribute("aria-hidden","false");
+      authorImg.style.visibility = "hidden";
+      mediaState.textContent = "video";
+      // sincronizza audio dopo il caricamento del player
+      setTimeout(applyAudioState, 650);
+      // prova anche a far partire (se l’autoplay viene bloccato, resta comunque cliccabile)
+      setTimeout(()=>ytCommand("playVideo"), 700);
+    }
+    function showImage(){
+      heygenIframe.src = "about:blank";
+      heygenWrap.style.display = "none";
+      heygenWrap.setAttribute("aria-hidden","true");
+      authorImg.style.visibility = "visible";
+      mediaState.textContent = "foto";
+      // quando torni alla foto, riportiamo l’audio in stato "attivo" per la prossima apertura
+      audioMuted = false;
+      updateAudioBtn();
+    }
+
+    authorImg.addEventListener('click', showVideo);
+    backToImg.addEventListener('click', showImage);
+
+    // ====== APPUNTI ======
+    const toggleNotes=document.getElementById('toggleNotes');
+    const notesWin=document.getElementById('notesWin');
+    const notesDrag=document.getElementById('notesDrag');
+    const notesText=document.getElementById('notesText');
+    const closeNotes=document.getElementById('closeNotes');
+    const exportTxt=document.getElementById('exportTxt');
+    const clearNotes=document.getElementById('clearNotes');
+    const statusEl=document.getElementById('status');
+    const counter=document.getElementById('counter');
+
+    const NOTES_KEY = `mw_notes::${location.pathname}`;
+    const POS_KEY = `mw_notes_pos::${location.pathname}`;
+
+    function openNotes(){ notesWin.classList.add('open'); toggleNotes.setAttribute('aria-pressed','true'); notesText.focus(); }
+    function closeNotesWin(){ notesWin.classList.remove('open'); toggleNotes.setAttribute('aria-pressed','false'); }
+    toggleNotes.addEventListener('click', ()=> notesWin.classList.contains('open') ? closeNotesWin() : openNotes());
+    closeNotes.addEventListener('click', closeNotesWin);
+
+    const saved=localStorage.getItem(NOTES_KEY);
+    if(saved!==null) notesText.value=saved;
+
+    function updateCounter(){ counter.textContent = `${notesText.value.length} caratteri`; }
+    updateCounter();
+
+    let saveTimer=null;
+    notesText.addEventListener('input', ()=>{
+      updateCounter();
+      statusEl.textContent='Scrivendo…';
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(()=>{
+        localStorage.setItem(NOTES_KEY, notesText.value);
+        statusEl.textContent='Salvati';
+      }, 350);
+    });
+
+    exportTxt.addEventListener('click', ()=>{
+      const blob=new Blob([notesText.value], {type:'text/plain;charset=utf-8'});
+      const a=document.createElement('a');
+      const lessonName=(location.pathname.split('/').pop() || 'lezione').replace('.html','');
+      const stamp=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+      a.href=URL.createObjectURL(blob);
+      a.download=`${lessonName}-appunti-${stamp}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    });
+
+    clearNotes.addEventListener('click', ()=>{
+      notesText.value='';
+      updateCounter();
+      localStorage.setItem(NOTES_KEY,'');
+      statusEl.textContent='Svuotati';
+      notesText.focus();
+    });
+
+    const savedPos=localStorage.getItem(POS_KEY);
+    if(savedPos){
+      try{
+        const p=JSON.parse(savedPos);
+        if(typeof p.left==='number') notesWin.style.left=p.left+'px';
+        if(typeof p.top==='number') notesWin.style.top=p.top+'px';
+        notesWin.style.right='auto'; notesWin.style.bottom='auto';
+      }catch{}
+    }
+    let ndrag={active:false, startX:0, startY:0, startLeft:0, startTop:0};
+    notesDrag.addEventListener('pointerdown',(e)=>{
+      ndrag.active=true;
+      notesDrag.setPointerCapture(e.pointerId);
+      const r=notesWin.getBoundingClientRect();
+      ndrag.startX=e.clientX; ndrag.startY=e.clientY;
+      ndrag.startLeft=r.left; ndrag.startTop=r.top;
+      notesWin.style.left=r.left+'px';
+      notesWin.style.top=r.top+'px';
+      notesWin.style.right='auto'; notesWin.style.bottom='auto';
+    });
+    notesDrag.addEventListener('pointermove',(e)=>{
+      if(!ndrag.active) return;
+      const dx=e.clientX-ndrag.startX, dy=e.clientY-ndrag.startY;
+      const r=notesWin.getBoundingClientRect(), w=r.width, h=r.height;
+      notesWin.style.left = clamp(ndrag.startLeft+dx, 8, window.innerWidth-w-8) + 'px';
+      notesWin.style.top  = clamp(ndrag.startTop +dy, 8, window.innerHeight-h-8) + 'px';
+    });
+    notesDrag.addEventListener('pointerup', ()=>{
+      if(!ndrag.active) return;
+      ndrag.active=false;
+      const r=notesWin.getBoundingClientRect();
+      localStorage.setItem(POS_KEY, JSON.stringify({left:r.left, top:r.top}));
+    });
+    notesDrag.addEventListener('pointercancel', ()=>ndrag.active=false);
+
+    window.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape'){
+        if(imgPop.classList.contains('open')) imgPop.classList.remove('open');
+        if(mediaState.textContent === "video") showImage();
+      }
+    });
+  </script>
+
+<script src="pwa.js" defer></script>
+
+</body>
+</html>

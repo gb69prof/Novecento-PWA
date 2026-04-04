@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pirandello — Sei personaggi in cerca d’autore</title>
+  <style>
+    :root{
+      --bg:#0f141a;
+      --panel:rgba(255,255,255,.08);
+      --panel2:rgba(0,0,0,.14);
+      --stroke:rgba(255,255,255,.16);
+      --stroke2:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.90);
+      --muted:rgba(255,255,255,.70);
+      --muted2:rgba(255,255,255,.55);
+      --accent:#f0c36a;
+      --paper:#f4efe6;
+      --ink:#1a1a1a;
+      --shadow: 0 20px 55px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 14px;
+      --font: ui-serif, Georgia, "Times New Roman", Times, serif;
+      --ui: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+      --paperLine: rgba(0,0,0,.06);
+      --paperEdge: rgba(0,0,0,.10);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 800px at 20% 15%, rgba(255,255,255,.12), transparent 55%),
+        radial-gradient(900px 600px at 80% 30%, rgba(240,195,106,.18), transparent 55%),
+        radial-gradient(900px 600px at 50% 90%, rgba(130,200,255,.12), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      font-family:var(--ui);
+      overflow-x:hidden;
+    }
+
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(15,20,26,.82), rgba(15,20,26,.55));
+      border-bottom:1px solid var(--stroke2);
+    }
+    .topbar{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:12px 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width:240px;
+    }
+    .logo{
+      width:36px; height:36px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(240,195,106,.95), rgba(255,255,255,.28));
+      box-shadow: 0 12px 26px rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .brand h2{
+      margin:0; font-size:14px; letter-spacing:.3px; font-weight:800;
+    }
+    .brand small{ display:block; margin-top:2px; color:var(--muted2); font-weight:600; }
+
+    .controls{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s;
+      font-size:13px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+    .btn:active{ transform: translateY(0px); }
+
+    .seg{
+      display:flex;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      overflow:hidden;
+      background: rgba(0,0,0,.18);
+    }
+    .seg button{
+      padding:8px 10px;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      font-weight:800;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .seg button.active{
+      background: rgba(240,195,106,.18);
+      color:var(--text);
+    }
+
+    .slider{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      background: rgba(255,255,255,.06);
+      font-weight:800;
+      color:var(--muted);
+      font-size:12px;
+    }
+    input[type="range"]{ width:120px; }
+
+    .wrap{
+      max-width:1200px;
+      margin: 16px auto 60px;
+      padding:0 14px;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:16px;
+    }
+
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+      .brand{ min-width:auto; }
+      .controls{ justify-content:flex-start; margin-left:0; }
+    }
+
+    /* ====== SIDEBAR ====== */
+    .sidebar{
+      border:1px solid var(--stroke2);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:sticky;
+      top:72px;
+      align-self:start;
+    }
+    .side-inner{ padding:14px; }
+
+    .author-card{
+      border:1px solid var(--stroke2);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(0,0,0,.20);
+      position:relative;
+    }
+    .media-frame{
+      width:100%;
+      aspect-ratio: 4/5;
+      background: rgba(0,0,0,.28);
+      position:relative;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+    .author-card img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      object-position: center;
+      display:block;
+      cursor:pointer;
+    }
+
+    .overlay{
+      position:absolute;
+      left:10px; top:10px;
+      display:flex; gap:6px; flex-wrap:wrap;
+      pointer-events:none;
+    }
+    .badge{
+      font-family:var(--ui);
+      font-size:11px;
+      padding:5px 8px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.18);
+      color:rgba(255,255,255,.88);
+      font-weight:800;
+      letter-spacing:.2px;
+      backdrop-filter: blur(8px);
+    }
+
+    .heygen{
+      width:100%; height:100%;
+      display:none;
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.28);
+    }
+    .heygen iframe{
+      width:100%; height:100%;
+      border:0;
+      display:block;
+    }
+    .media-actions{
+      position:absolute;
+      right:10px; top:10px;
+      z-index:2;
+      display:flex;
+      gap:8px;
+    }
+    .mini-btn{
+      font-family:var(--ui);
+      font-weight:900;
+      font-size:12px;
+      padding:7px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.45);
+      color: rgba(255,255,255,.92);
+      cursor:pointer;
+      backdrop-filter: blur(8px);
+      transition:.18s;
+    }
+    .mini-btn:hover{ transform: translateY(-1px); }
+
+    .author-meta{
+      padding:10px 12px 12px;
+      font-family: var(--ui);
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .author-meta strong{
+      display:block;
+      color: var(--text);
+      font-size:13px;
+      margin-bottom:2px;
+    }
+
+    .side-title{
+      margin:14px 2px 8px;
+      font-family: var(--ui);
+      font-weight:900;
+      letter-spacing:.3px;
+      color: rgba(255,255,255,.86);
+      font-size:13px;
+      text-transform: uppercase;
+    }
+
+    .index{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      padding-bottom:4px;
+    }
+    .index a{
+      text-decoration:none;
+      color: rgba(255,255,255,.85);
+      font-weight:800;
+      font-size:13px;
+      padding:9px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      transition:.18s;
+    }
+    .index a:hover{
+      transform: translateY(-1px);
+      background: rgba(240,195,106,.14);
+      border-color: rgba(240,195,106,.28);
+    }
+
+    /* ====== BOOK/PAGES ====== */
+    .book{
+      border:1px solid var(--stroke2);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .book-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-bottom:1px solid var(--stroke2);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.10));
+      font-family: var(--ui);
+    }
+    .book-top .hint{
+      color: var(--muted2);
+      font-size:12px;
+      font-weight:700;
+    }
+    .book-top .hint b{ color:rgba(255,255,255,.85); }
+
+    .pages{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:0;
+      padding:14px;
+    }
+    .two .pages{
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .two .pages{ grid-template-columns: 1fr; }
+    }
+
+    .page{
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 18px 18px 22px;
+      border:1px solid var(--paperEdge);
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 16px 35px rgba(0,0,0,.22);
+      font-family: var(--font);
+      line-height: 1.55;
+    }
+    .page:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(to bottom, transparent, rgba(0,0,0,.03)),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 26px,
+          var(--paperLine) 27px
+        );
+      pointer-events:none;
+      opacity:.55;
+    }
+    .page-inner{ position:relative; z-index:1; }
+
+    .page h1{
+      font-size: 28px;
+      margin: 2px 0 10px;
+      line-height:1.15;
+      letter-spacing:.2px;
+    }
+    .page h2{
+      font-size: 18px;
+      margin: 18px 0 8px;
+      font-family: var(--ui);
+      letter-spacing:.2px;
+    }
+    .page p{
+      margin: 0 0 12px;
+      font-size: 17px;
+    }
+    .page ul{
+      margin: 6px 0 14px 18px;
+      padding:0;
+    }
+    .page li{ margin: 6px 0; font-size: 16.5px; }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin: 10px 0 12px;
+      font-family: var(--ui);
+    }
+    .meta span{
+      font-size: 12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+      font-weight:800;
+      color: rgba(0,0,0,.72);
+    }
+
+    figure.inline-media{
+      margin: 12px 0 14px;
+      border-radius: 16px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.45);
+      overflow:hidden;
+      box-shadow: 0 10px 22px rgba(0,0,0,.14);
+    }
+    figure.inline-media img.thumb{
+      width:100%;
+      display:block;
+      cursor: zoom-in;
+      max-height: 380px;
+      object-fit: contain;
+      background: rgba(0,0,0,.02);
+    }
+    figure.inline-media figcaption{
+      font-family: var(--ui);
+      font-size: 12px;
+      padding: 10px 12px;
+      color: rgba(0,0,0,.70);
+      border-top:1px solid rgba(0,0,0,.10);
+    }
+
+    .quote{
+      border-left: 4px solid rgba(240,195,106,.85);
+      padding: 10px 12px;
+      margin: 14px 0;
+      background: rgba(240,195,106,.18);
+      border-radius: 12px;
+      font-style: italic;
+      font-size: 16.5px;
+    }
+
+
+    /* ====== ACCORDION (brani a tendina) ====== */
+    details.accordion{
+      margin: 10px 0 14px;
+      border:1px solid rgba(0,0,0,.12);
+      border-radius: 14px;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
+      overflow:hidden;
+    }
+    details.accordion summary{
+      cursor:pointer;
+      list-style:none;
+      padding: 10px 12px;
+      font-family: var(--ui);
+      font-weight: 900;
+      font-size: 13px;
+      color: rgba(0,0,0,.78);
+      background: rgba(240,195,106,.18);
+      border-bottom:1px solid rgba(0,0,0,.10);
+      user-select:none;
+    }
+    details.accordion summary::-webkit-details-marker{ display:none; }
+    details.accordion[open] summary{
+      background: rgba(240,195,106,.26);
+    }
+    .acc-body{ padding: 10px 12px 12px; }
+    .brano{
+      font-family: var(--font);
+      font-size: 16.5px;
+      line-height: 1.55;
+      color: rgba(0,0,0,.92);
+      white-space: normal;
+    }
+
+    /* ====== IMAGE MODAL (zoom/pan/reset + resize) ====== */
+    .img-pop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.75);
+      display:none;
+      z-index:80;
+    }
+    .img-pop.open{ display:block; }
+
+    .img-pop .panel{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      width:min(920px, 92vw);
+      height:min(640px, 80vh);
+      background: rgba(15,20,26,.92);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.60);
+      overflow:hidden;
+    }
+    .pop-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.14);
+      font-family: var(--ui);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+    }
+    .pop-top .title{
+      font-size:12px;
+      letter-spacing:.2px;
+      opacity:.95;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 55%;
+    }
+    .pop-actions{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .pop-actions button{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      padding:7px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+    }
+    .pop-actions button:hover{ background: rgba(255,255,255,.12); }
+    .pop-body{
+      width:100%;
+      height: calc(100% - 52px);
+      position:relative;
+      overflow:hidden;
+      touch-action:none;
+    }
+    .pop-body img{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%) scale(1);
+      transform-origin: center center;
+      user-select:none;
+      -webkit-user-drag:none;
+      max-width:none;
+      max-height:none;
+      cursor: grab;
+    }
+    .pop-body img:active{ cursor: grabbing; }
+
+    .resize-handle{
+      position:absolute;
+      width:18px; height:18px;
+      right:8px; bottom:8px;
+      border-radius: 6px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      cursor: nwse-resize;
+    }
+
+    /* ====== NOTES WINDOW (draggable, autosave, export, per-file key) ====== */
+    .notes{
+      position:fixed;
+      right: 18px;
+      bottom: 18px;
+      width:min(360px, calc(100vw - 28px));
+      height: 320px;
+      background: rgba(15,20,26,.92);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      box-shadow: 0 20px 55px rgba(0,0,0,.55);
+      z-index:60;
+      display:none;
+      overflow:hidden;
+    }
+    .notes.open{ display:block; }
+
+    .notes .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      background: rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.14);
+      font-family: var(--ui);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      cursor:grab;
+      user-select:none;
+    }
+    .notes .bar:active{ cursor:grabbing; }
+    .notes .bar .left{
+      display:flex; gap:8px; align-items:center;
+      font-size:12px;
+      letter-spacing:.2px;
+    }
+    .notes .bar .dot{
+      width:10px; height:10px; border-radius:99px;
+      background: rgba(240,195,106,.95);
+      box-shadow: 0 0 0 2px rgba(240,195,106,.20);
+    }
+    .notes .bar .right{
+      display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .notes .bar button{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      padding:6px 9px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+    }
+    .notes .bar button:hover{ background: rgba(255,255,255,.12); }
+
+    .notes textarea{
+      width:100%;
+      height: calc(100% - 52px);
+      border:0;
+      outline:none;
+      resize:none;
+      background: transparent;
+      color: rgba(255,255,255,.92);
+      padding: 12px 12px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .notes .status{
+      position:absolute;
+      left:12px;
+      bottom:8px;
+      font-family: var(--ui);
+      font-size:11px;
+      color: rgba(255,255,255,.70);
+      pointer-events:none;
+    }
+    .notes .count{
+      position:absolute;
+      right:12px;
+      bottom:8px;
+      font-family: var(--ui);
+      font-size:11px;
+      color: rgba(255,255,255,.70);
+      pointer-events:none;
+    }
+  </style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#961B2B">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+</head>
+<body>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h2>Pirandello — Percorso</h2>
+          <small>Layout quaderno • immagini cliccabili • appunti salvati</small>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="seg" role="tablist" aria-label="Modalità pagine">
+          <button id="onePageBtn" class="active" type="button" aria-selected="true">1 pagina</button>
+          <button id="twoPageBtn" type="button" aria-selected="false">2 pagine</button>
+        </div>
+
+        <div class="slider" title="Dimensione testo">
+          Aa <input id="fontSize" type="range" min="16" max="24" value="18" /> A+
+        </div>
+
+        <button class="btn" id="toggleNotes" aria-pressed="false">📝 Appunti</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- SINISTRA -->
+    <aside class="sidebar">
+      <div class="side-inner">
+
+        <div class="author-card" aria-label="Autore e video">
+          <div class="media-frame" id="mediaFrame">
+            <img id="authorImg" src="assets/IMG_3679.png" alt="Pirandello (clicca per video)" />
+
+            <div class="overlay">
+              <span class="badge">clic sulla foto → video</span>
+              <span class="badge" id="mediaState">foto</span>
+            </div>
+
+            <div class="heygen" id="heygenWrap" aria-hidden="true">
+              <div class="media-actions">
+                
+                <button class="mini-btn" id="toggleAudio" type="button" aria-pressed="true" title="Audio">🔈 Audio</button>
+<button class="mini-btn" id="backToImg" type="button">Torna alla foto</button>
+              </div>
+
+              <iframe
+                id="heygenIframe"
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/9N5_iJvgra0?autoplay=1&mute=0&playsinline=1&rel=0&enablejsapi=1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <div class="author-meta">
+            <strong>Pirandello — Sei personaggi in cerca d’autore</strong>
+            <span>clic sulla foto → video</span>
+          </div>
+        </div>
+
+        <!-- INDICE -->
+        <div class="side-title">Indice</div>
+        <nav class="index" aria-label="Indice">
+          
+          <a href="Pirandello.html">L’immagine del mondo</a>
+
+          <a href="Umorismo.html">Umorismo</a>
+          <a href="Novelle.html">Novelle</a>
+
+          <a href="Romanzi.html">I romanzi</a>
+          <a href="Mattia.html" style="padding-left:22px;">- Il fu Mattia Pascal</a>
+          <a href="Uno.html" style="padding-left:22px;">- Uno, nessuno e centomila</a>
+
+          <a href="Teatro.html">Il teatro</a>
+          <a href="Cosi.html" style="padding-left:22px;">- Così è (se vi pare)</a>
+          <a href="Sei.html" style="padding-left:22px; font-weight:800; text-decoration:underline;">- Sei personaggi in cerca d’autore</a>
+
+          <a href="Conclusione.html">Conclusione</a>
+
+        </nav>
+
+      </div>
+    </aside>
+
+    <!-- DESTRA -->
+    <section class="book" id="book">
+      <div class="book-top">
+        <div class="hint">
+          <b>Sei personaggi in cerca d’autore</b> • testo selezionabile • immagini (clic → zoom) • brani originali a tendina
+        </div>
+        <div class="hint">Suggerimento: usa “2 pagine” su desktop, “1 pagina” su mobile.</div>
+      </div>
+
+      <div class="pages" id="pages">
+
+        
+        <!-- PAGINA 1 -->
+        <article class="page" id="page1">
+    <div class="page-inner">
+      
+    <div class="meta">
+      <span>Tragedia (1921)</span>
+      <span>Teatro nel teatro</span>
+      <span>Crisi dell’arte</span>
+      <span>Forma = prigione</span>
+    </div>
+    
+      <h1>Sei personaggi in cerca d’autore</h1>
+      <p>Questa tragedia rappresenta il culmine filosofico del teatro pirandelliano. In essa compaiono tutti i punti fondamentali del pensiero dell’autore – la critica alla società, la critica alla famiglia, l’indagine sull’incomunicabilità e la filosofia del flusso perenne – ma viene aggiunta una nuova accusa, rivolta questa volta al mondo dell’arte: l’incomunicabilità tra chi scrive e chi rappresenta un testo.</p>
+<p>Pirandello mostra come la rappresentazione scenica di un’opera non coincida mai con l’intenzione originaria dello scrittore, perché gli attori tendono a interpretare i personaggi secondo la loro personale visione. In questo modo la realtà creata dall’autore viene inevitabilmente falsificata. L’incomunicabilità, quindi, non riguarda soltanto la vita reale, ma si estende anche alla sua rappresentazione artistica: diventa un dato ontologico dell’esistenza umana.</p>
+<p>Le parole del Padre esprimono in forma filosofica ciò che i personaggi cercano di far comprendere agli attori. I personaggi non si riconoscono nelle interpretazioni sceniche, che trasformano le loro vite in caricature. Il Padre spiega al Capocomico l’impossibilità di una rappresentazione autentica: ciò che crediamo reale nell’uomo in realtà non lo è, perché l’uomo è mutevole; al contrario il personaggio, una volta creato, possiede un’identità fissa e immutabile, quindi è più reale della persona stessa.</p>
+<p>Secondo questa logica, l’uomo può essere tutto e nessuno, perché il suo io è destinato a trasformarsi continuamente; il personaggio invece è sempre qualcuno, poiché la sua storia è già stata scritta una volta per tutte e non può essere cambiata.</p>
+<p>Ma la realtà dei personaggi porta con sé anche la tragicità dell’esistenza: al contrario dell’uomo, essi non possono tornare indietro, sono definiti per sempre nel bene o nel male. Rivivono all’infinito ogni istante della loro vicenda, come in una condanna dantesca che unisce passato, presente e futuro. È per questo che il figlioletto e la bambina non parlano: pur presenti sulla scena, sono già morti, e la loro storia si ripete all’infinito.</p>
+<p>Se la tragedia della vita umana consiste nell’incomunicabilità generata dal flusso perenne dell’esistenza, la condanna definitiva si ha quando la vita si irrigidisce in forme fissate: allora l’uomo, personaggio o individuo, muore pur continuando a vivere. Chi è “nessuno” ha ancora la possibilità di cambiare; chi è già “qualcuno” è irrimediabilmente prigioniero del proprio personaggio.</p>
+      
+    <figure class="inline-media">
+      <img class="thumb" src="assets/Sei-1.png" alt="Schema: nuclei concettuali" data-title="Sei personaggi — schema 1" />
+      <figcaption>Schema 1: temi principali, crisi dell’arte e paradosso uomo/personaggio.</figcaption>
+    </figure>
+    
+      <h2>La poetica e la filosofia nel testo</h2>
+      <p>La nuova verità messa in luce da Pirandello è l’inconsistenza dell’io: per la società è più vero ciò che appare stabile e immutabile, rispetto all’individuo che, invece, muta continuamente.</p>
+<p>La tragedia dei personaggi consiste nella loro condizione ormai immutabile, come accade a tutti i personaggi letterari. Ma la tragedia più grande è quella degli individui reali: pur vivendo in un perenne cambiamento, essi vengono fissati in maschere che li imprigionano, costretti a una rigidità innaturale che ne soffoca la vitalità autentica.</p>
+      
+        <details class="accordion">
+          <summary>Apri il brano — Dialogo: Il Padre e Il Capocomico</summary>
+          <div class="acc-body"><div class="brano">IL PADRE (con dignità, ma senza alterigia): Un personaggio, signore, può sempre domandare a un uomo chi è. Perché un personaggio ha veramente una vita sua, segnata di caratteri suoi, per cui è sempre &quot;qualcuno&quot;. Mentre un uomo – non dico lei, adesso – un uomo così in genere, può non esser &quot;nessuno&quot;.<br>IL CAPOCOMICO: Già! Ma lei lo domanda a me, che sono il Direttore! Il Capocomico! Ha capito?<br>IL PADRE (quasi in sordina, con melliflua umiltà): Soltanto per sapere, signore, se veramente lei com’è adesso, si vede... come vede per esempio, a distanza di tempo, quel che lei era una volta, con tutte le illusioni che allora si faceva; con tutte le cose, dentro e intorno a lei, come allora le parevano – ed erano, erano realmente per lei! – Ebbene, signore: ripensando a quelle illusioni che adesso lei non si fa più, a tutte quelle cose che ora non le &quot;sembrano&quot; più come per lei &quot;erano&quot; un tempo; non si sente mancare, non dico queste tavole di palcoscenico, ma il terreno, il terreno sotto i piedi, argomentando che ugualmente &quot;questo&quot; come lei ora si sente, tutta la sua realtà d’oggi così com’è, è destinata a parerle illusione domani?<br>IL CAPOCOMICO (senza aver ben capito, nell’intontimento della speciosa argomentazione): Ebbene? E che vuol concludere con questo?<br>IL PADRE: Oh, niente, signore. Farle vedere che se noi (indicherà di nuovo sé e gli altri Personaggi) oltre l’illusione, non abbiamo altra realtà, è bene che anche lei diffidi della realtà sua, di questa che lei oggi respira e tocca in sé, perché – come quella di ieri – è destinata a scoprirlesi illusione domani.<br>IL CAPOCOMICO (rivolgendosi a prenderla in riso): Ah, benissimo! E dica per giunta che lei, con codesta commedia che viene a rappresentarmi qua, è più vero e reale di me!<br>IL PADRE (con la massima serietà): Ma questo senza dubbio, signore!<br>IL CAPOCOMICO: Ah sì?<br>IL PADRE: Credevo che lei lo avesse già compreso fin da principio.<br>IL CAPOCOMICO: Più reale di me?<br>IL PADRE: Se la sua realtà può cangiare dall’oggi al domani...<br>IL CAPOCOMICO: Ma si sa che può cangiare, sfido! Cangia continuamente, come quella di tutti!<br>IL PADRE (con un grido): Ma la nostra no, signore! Vede? La differenza è questa! Non cangia, non può cangiare, né esser altra, mai, perché già fissata – così – &quot;questa&quot; – per sempre – (è terribile, signore!) realtà immutabile, che dovrebbe dar loro un brivido nell’accostarsi a noi!<br>La realtà non è ciò che semplicemente si vede, ma un insieme molto più complesso e sfaccettato. Essa possiede molte facce, e ciascun individuo riesce a coglierne soltanto una, credendo però di possedere la verità assoluta. È proprio da questa illusione che nasce l’incomunicabilità: ogni persona giudica a partire dalla propria prospettiva, senza considerare la “verità” degli altri. Così si rende impossibile una reale comprensione reciproca.</div></div>
+        </details>
+        
+    </div>
+    </article>
+
+        <!-- PAGINA 2 -->
+        <article class="page" id="page2">
+    <div class="page-inner">
+      <h1>Arte, rappresentazione e incomunicabilità</h1>
+      
+    <div class="meta">
+      <span>Incomunicabilità</span>
+      <span>Identità</span>
+      <span>Paradosso ontologico</span>
+      <span>Silenzio dei bambini</span>
+    </div>
+    
+      <h2>La sociologia dell’incomunicabilità</h2>
+      <p>La realtà non è ciò che semplicemente si vede, ma un insieme molto più complesso e sfaccettato. Essa possiede molte facce, e ciascun individuo riesce a coglierne soltanto una, credendo però di possedere la verità assoluta. È proprio da questa illusione che nasce l’incomunicabilità: ogni persona giudica a partire dalla propria prospettiva, senza considerare la “verità” degli altri. Così si rende impossibile una reale comprensione reciproca.</p>
+      
+        <details class="accordion">
+          <summary>Apri il brano — Dialogo: La Figliastra e Il Padre</summary>
+          <div class="acc-body"><div class="brano">LA FIGLIASTRA: Qui non si narra! Qui non si narra!<br>IL PADRE: Ma io non narro! Voglio spiegargli.<br>LA FIGLIASTRA: Ah, bello, sì! A modo tuo!<br>(Il Capocomico, a questo punto, risalirà sul palcoscenico per rimettere l’ordine.)<br>IL PADRE: Ma se è tutto qui il male! Nelle parole! Abbiamo tutti dentro un mondo di cose; ciascuno un suo mondo di cose! E come possiamo intenderci, signore, se nelle parole ch’io dico metto il senso e il valore delle cose come sono dentro di me; mentre chi le ascolta, inevitabilmente le assume col senso e col valore che hanno per sé, del mondo com’egli l’ha dentro? Crediamo d’intenderci; non c’intendiamo mai!<br>Se la prima immagine ci fa sorridere – gli attori che cercano di interpretare i personaggi secondo la loro prospettiva – l’interiorizzazione ci induce a riflettere e a cogliere il dolore nascosto dietro quel sorriso: l’immutabilità della loro condizione.</div></div>
+        </details>
+        
+
+        <details class="accordion">
+          <summary>Apri il brano — Dialogo: La Figliastra e Il Capocomico</summary>
+          <div class="acc-body"><div class="brano">LA FIGLIASTRA: E che vuol fare lei allora, scusi?<br>IL CAPOCOMICO: Lo vedrà, lo vedrà! Lasci fare a me adesso!<br>LA FIGLIASTRA: No, signore! Della mia nausea, di tutte le ragioni, una più crudele e più vile dell’altra, per cui io sono “questa”, “così”, vorrebbe forse cavarne un pasticcetto romantico sentimentale, con lui che mi chiede le ragioni del lutto, e io che gli rispondo lacrimando che da due mesi m’è morto papà? No, no, caro signore! Bisogna che lui mi dica come m’ha detto: “Togliamo via subito allora, codesto vestitino!”. E io, con tutto il mio lutto nel cuore, di appena due mesi, me ne sono andata là, vede? là, dietro quel paravento, e con queste dita che mi ballano dall’onta, dal ribrezzo, mi sono sganciato il busto, la veste...<br>L’incomunicabilità, unita alla filosofia del flusso perenne, dà vita a una nuova figura nella letteratura pirandelliana: il nessuno. È colui che ha perduto la propria identità, soffocata dalle numerose maschere che la società gli impone.<br>Nei Sei personaggi in cerca d’autore questo processo si approfondisce ulteriormente: la spersonalizzazione dell’individuo non deriva soltanto dalle pressioni esterne, ma nasce anche dall’interno, quando l’uomo rifiuta di accettare la sua natura mutevole, il suo essere costantemente cangiante. In questo rifiuto egli si smarrisce, condannandosi a restare “nessuno”.</div></div>
+        </details>
+        
+
+        <details class="accordion">
+          <summary>Apri il brano — Dialogo: Il Padre</summary>
+          <div class="acc-body"><div class="brano">IL PADRE: ... ciascuno – fuori, davanti agli altri – è vestito di dignità: ma dentro di sé sa bene tutto ciò che nell’intimità con se stesso si passa, d’inconfessabile. Si cede, si cede alla tentazione; per rialzarcene subito dopo, magari, con una gran fretta di ricomporre intera e solida, come una pietra su una fossa, la nostra dignità, che nasconde e seppellisce ai nostri stessi occhi ogni segno e il ricordo stesso della vergogna. È così di tutti! Manca solo il coraggio di dirle, certe cose!</div></div>
+        </details>
+        
+      
+    <figure class="inline-media">
+      <img class="thumb" src="assets/Sei-2.png" alt="Schemi: mappa 1 e mappa 2" data-title="Sei personaggi — mappe" />
+      <figcaption>Mappe: arte/rappresentazione e paradosso ontologico (uomo vs personaggio).</figcaption>
+    </figure>
+    
+      <h2>Il sentimento del contrario</h2>
+      <p>Se la prima immagine ci fa sorridere – gli attori che cercano di interpretare i personaggi secondo la loro prospettiva – l’interiorizzazione ci induce a riflettere e a cogliere il dolore nascosto dietro quel sorriso: l’immutabilità della loro condizione.</p>
+      <h2>Il nuovo eroe: il “nessuno”</h2>
+      <p>L’incomunicabilità, unita alla filosofia del flusso perenne, dà vita a una nuova figura nella letteratura pirandelliana: il nessuno. È colui che ha perduto la propria identità, soffocata dalle numerose maschere che la società gli impone.</p>
+<p>Nei Sei personaggi in cerca d’autore questo processo si approfondisce ulteriormente: la spersonalizzazione dell’individuo non deriva soltanto dalle pressioni esterne, ma nasce anche dall’interno, quando l’uomo rifiuta di accettare la sua natura mutevole, il suo essere costantemente cangiante. In questo rifiuto egli si smarrisce, condannandosi a restare “nessuno”.</p>
+      <h2>Vocabolario dei termini chiave</h2>
+      <ul><li>Teatro nel teatro: struttura innovativa in cui i personaggi irrompono durante le prove di una compagnia, chiedendo di rappresentare la loro storia.</li>
+<li>Incomunicabilità: impossibilità di intendersi, che riguarda non solo la vita quotidiana, ma anche la rappresentazione artistica.</li>
+<li>Personaggio: figura creata dall’autore, che possiede un’identità fissa e immutabile, più “reale” di quella di un uomo in continuo cambiamento.</li>
+<li>Individuo: essere umano in divenire, destinato a mutare continuamente e a non avere mai una forma stabile.</li>
+<li>Illusione: ciò che appare vero in un determinato momento, ma che in seguito si rivela fragile e destinato a dissolversi.</li>
+<li>Maschera: rigidità imposta dall’esterno o dalle convenzioni sociali, che soffoca la vitalità autentica.</li>
+<li>Tragicità dell’arte: i personaggi, fissati per sempre nella loro storia, vivono una condanna a riviverla all’infinito.</li>
+<li>Capocomico: figura che rappresenta il mondo del teatro, incapace di cogliere l’essenza drammatica dei personaggi.</li>
+<li>Illusione vs realtà: tema centrale che mette in discussione la distinzione stessa tra ciò che è vero e ciò che è finzione.</li></ul>
+      <h2>Saperi irrinunciabili</h2>
+      <ol><li>Rappresentato nel 1921, segna una rivoluzione nella storia del teatro europeo, con la tecnica del teatro nel teatro.</li>
+<li>L’opera porta alle estreme conseguenze la filosofia pirandelliana dell’incomunicabilità, estesa anche al rapporto tra autore, personaggi e attori.</li>
+<li>I personaggi hanno un’identità fissa e immutabile: proprio per questo risultano più reali degli uomini, che invece mutano continuamente.</li>
+<li>L’individuo è fluido e cangiante, ma la società tende a fissarlo in maschere che soffocano la sua autenticità.</li>
+<li>La tragedia dei personaggi consiste nell’essere condannati a rivivere in eterno la propria vicenda, senza possibilità di cambiamento.</li>
+<li>La celebre affermazione del Padre («un uomo può non essere nessuno, ma un personaggio è sempre qualcuno») sintetizza la frattura tra vita e forma.</li>
+<li>L’opera mette in discussione i concetti di illusione e realtà: ciò che sembra vero oggi domani può rivelarsi illusorio.</li>
+<li>Pirandello mostra che la vita autentica è nel flusso perenne del cambiamento; ciò che si irrigidisce in una forma muore.</li>
+<li>Sei personaggi in cerca d’autore è il culmine filosofico e artistico del teatro pirandelliano, dove riflessione teorica e azione scenica coincidono.</li></ol>
+    </div>
+    </article>
+
+</div>
+    </section>
+  </div>
+
+  <!-- IMAGE POPUP -->
+  <div class="img-pop" id="imgPop" aria-hidden="true">
+    <div class="panel" id="popPanel" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
+      <div class="pop-top">
+        <div class="title" id="popTitle">Immagine</div>
+        <div class="pop-actions">
+          <button type="button" id="zoomIn">Zoom +</button>
+          <button type="button" id="zoomOut">Zoom −</button>
+          <button type="button" id="resetPop">Reset</button>
+          <button type="button" id="closePop">Chiudi</button>
+        </div>
+      </div>
+      <div class="pop-body" id="popBody">
+        <img id="popImg" alt="Immagine" />
+        <div class="resize-handle" id="popResize" title="Ridimensiona finestra"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="notes" id="notesWin" aria-hidden="true">
+    <div class="bar" id="notesDrag" title="Trascina la finestra">
+      <div class="left">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Appunti</span>
+      </div>
+      <div class="right">
+        <button type="button" id="exportTxt">Export .txt</button>
+        <button type="button" id="clearNotes">Pulisci</button>
+        <button type="button" id="closeNotes">Chiudi</button>
+      </div>
+    </div>
+    <textarea id="notesText" placeholder="Scrivi qui… (autosave)"></textarea>
+    <div class="status" id="status">Salvato</div>
+    <div class="count" id="counter">0 caratteri</div>
+  </div>
+
+  <script>
+    // ====== INDICE ======
+    document.querySelectorAll('.index a').forEach(a=>{
+      a.addEventListener('click',(e)=>{
+        const href=a.getAttribute('href');
+        if(!href || !href.startsWith('#')) return;
+        const target=document.querySelector(href);
+        if(!target) return;
+        e.preventDefault();
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // ====== 2 PAGINE ======
+    const onePageBtn=document.getElementById('onePageBtn');
+    const twoPageBtn=document.getElementById('twoPageBtn');
+    function setMode(two){
+      document.getElementById('book').classList.toggle('two', two);
+      onePageBtn.classList.toggle('active', !two);
+      twoPageBtn.classList.toggle('active', two);
+      onePageBtn.setAttribute('aria-selected', (!two).toString());
+      twoPageBtn.setAttribute('aria-selected', (two).toString());
+    }
+    onePageBtn.addEventListener('click',()=>setMode(false));
+    twoPageBtn.addEventListener('click',()=>setMode(true));
+
+    // ====== FONT SIZE ======
+    const fontSize=document.getElementById('fontSize');
+    function applyFont(){
+      const size=fontSize.value;
+      document.querySelectorAll('.page p, .page li').forEach(el=>el.style.fontSize = size+'px');
+      document.querySelectorAll('.page h1').forEach(el=>el.style.fontSize = (parseInt(size)+10)+'px');
+    }
+    fontSize.addEventListener('input', applyFont);
+    applyFont();
+
+    // ====== IMAGE POPUP (zoom/pan/reset + resize) ======
+    const imgPop=document.getElementById('imgPop');
+    const popImg=document.getElementById('popImg');
+    const popTitle=document.getElementById('popTitle');
+    const closePop=document.getElementById('closePop');
+    const zoomIn=document.getElementById('zoomIn');
+    const zoomOut=document.getElementById('zoomOut');
+    const resetPop=document.getElementById('resetPop');
+    const popBody=document.getElementById('popBody');
+    const popPanel=document.getElementById('popPanel');
+    const popResize=document.getElementById('popResize');
+
+    let pscale=1, ptx=0, pty=0;
+    let pdrag={active:false, x:0, y:0};
+
+    const clamp=(n,min,max)=>Math.max(min, Math.min(max,n));
+    const applyPopTransform=()=> {
+      popImg.style.transform = `translate(calc(-50% + ${ptx}px), calc(-50% + ${pty}px)) scale(${pscale})`;
+    };
+
+    function openImagePop(src,title){
+      popImg.src=src;
+      popTitle.textContent=title || 'Immagine';
+      pscale=1; ptx=0; pty=0; applyPopTransform();
+
+      imgPop.classList.add('open');
+      imgPop.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    }
+    function closeImagePop(){
+      imgPop.classList.remove('open');
+      imgPop.setAttribute('aria-hidden','true');
+      document.body.style.overflow='';
+      popImg.src='';
+    }
+
+    document.querySelectorAll('img.thumb').forEach(img=>{
+      img.addEventListener('click', ()=>{
+        openImagePop(img.getAttribute('src'), img.dataset.title || img.alt);
+      });
+    });
+
+    closePop.addEventListener('click', closeImagePop);
+    imgPop.addEventListener('click', (e)=>{ if(e.target===imgPop) closeImagePop(); });
+
+    zoomIn.addEventListener('click', ()=>{ pscale=clamp(pscale*1.15, .6, 6); applyPopTransform(); });
+    zoomOut.addEventListener('click', ()=>{ pscale=clamp(pscale/1.15, .6, 6); applyPopTransform(); });
+    resetPop.addEventListener('click', ()=>{ pscale=1; ptx=0; pty=0; applyPopTransform(); });
+
+    popBody.addEventListener('wheel', (e)=>{
+      e.preventDefault();
+      const delta = Math.sign(e.deltaY);
+      if(delta>0) pscale = clamp(pscale/1.12, .6, 6);
+      else pscale = clamp(pscale*1.12, .6, 6);
+      applyPopTransform();
+    }, {passive:false});
+
+    popBody.addEventListener('pointerdown',(e)=>{
+      if(e.target===popResize) return;
+      pdrag.active=true;
+      pdrag.x=e.clientX;
+      pdrag.y=e.clientY;
+      popBody.setPointerCapture(e.pointerId);
+    });
+    popBody.addEventListener('pointermove',(e)=>{
+      if(!pdrag.active) return;
+      const dx=e.clientX-pdrag.x, dy=e.clientY-pdrag.y;
+      pdrag.x=e.clientX; pdrag.y=e.clientY;
+      ptx += dx; pty += dy;
+      applyPopTransform();
+    });
+    popBody.addEventListener('pointerup',()=>pdrag.active=false);
+    popBody.addEventListener('pointercancel',()=>pdrag.active=false);
+
+    // Resize panel
+    let presize={active:false, startX:0, startY:0, startW:0, startH:0};
+    popResize.addEventListener('pointerdown',(e)=>{
+      presize.active=true;
+      presize.startX=e.clientX; presize.startY=e.clientY;
+      const r=popPanel.getBoundingClientRect();
+      presize.startW=r.width; presize.startH=r.height;
+      popResize.setPointerCapture(e.pointerId);
+    });
+    popResize.addEventListener('pointermove',(e)=>{
+      if(!presize.active) return;
+      const dx=e.clientX-presize.startX, dy=e.clientY-presize.startY;
+      popPanel.style.width  = clamp(presize.startW+dx, 320, window.innerWidth-16) + 'px';
+      popPanel.style.height = clamp(presize.startH+dy, 240, window.innerHeight-16) + 'px';
+    });
+    popResize.addEventListener('pointerup',()=>presize.active=false);
+    popResize.addEventListener('pointercancel',()=>presize.active=false);
+
+    // ====== FOTO → VIDEO (solo nella sidebar) ======
+    const authorImg = document.getElementById('authorImg');
+    const heygenWrap = document.getElementById('heygenWrap');
+    const heygenIframe = document.getElementById('heygenIframe');
+    const backToImg = document.getElementById('backToImg');
+    const mediaState = document.getElementById('mediaState');
+
+    
+
+    // ====== AUDIO (YouTube) ======
+    const toggleAudioBtn = document.getElementById('toggleAudio');
+    let audioMuted = false; // di default: audio attivo
+
+    function updateAudioBtn(){
+      if(!toggleAudioBtn) return;
+      toggleAudioBtn.textContent = audioMuted ? '🔇 Audio' : '🔈 Audio';
+      // aria-pressed=true = "attivo" (audio ON)
+      toggleAudioBtn.setAttribute('aria-pressed', String(!audioMuted));
+    }
+
+    function ytCommand(func, args){
+      try{
+        if(!heygenIframe || !heygenIframe.contentWindow) return;
+        heygenIframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: func,
+          args: args || []
+        }), '*');
+      }catch(e){}
+    }
+
+    function applyAudioState(){
+      // prova a sincronizzare lo stato del player
+      ytCommand(audioMuted ? 'mute' : 'unMute');
+      updateAudioBtn();
+    }
+
+    if(toggleAudioBtn){
+      updateAudioBtn();
+      toggleAudioBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        audioMuted = !audioMuted;
+        applyAudioState();
+      });
+    }
+const REAL_SRC = heygenIframe.getAttribute('src');
+    heygenIframe.dataset.src = REAL_SRC;
+    heygenIframe.src = "about:blank";
+
+    function showVideo(){
+      heygenIframe.src = heygenIframe.dataset.src;
+      heygenWrap.style.display = "block";
+      heygenWrap.setAttribute("aria-hidden","false");
+      authorImg.style.visibility = "hidden";
+      mediaState.textContent = "video";
+      // sincronizza audio dopo il caricamento del player
+      setTimeout(applyAudioState, 650);
+      // prova anche a far partire (se l’autoplay viene bloccato, resta comunque cliccabile)
+      setTimeout(()=>ytCommand("playVideo"), 700);
+    }
+    function showImage(){
+      heygenIframe.src = "about:blank";
+      heygenWrap.style.display = "none";
+      heygenWrap.setAttribute("aria-hidden","true");
+      authorImg.style.visibility = "visible";
+      mediaState.textContent = "foto";
+      // quando torni alla foto, riportiamo l’audio in stato "attivo" per la prossima apertura
+      audioMuted = false;
+      updateAudioBtn();
+    }
+
+    authorImg.addEventListener('click', showVideo);
+    backToImg.addEventListener('click', showImage);
+
+    // ====== APPUNTI ======
+    const toggleNotes=document.getElementById('toggleNotes');
+    const notesWin=document.getElementById('notesWin');
+    const notesDrag=document.getElementById('notesDrag');
+    const notesText=document.getElementById('notesText');
+    const closeNotes=document.getElementById('closeNotes');
+    const exportTxt=document.getElementById('exportTxt');
+    const clearNotes=document.getElementById('clearNotes');
+    const statusEl=document.getElementById('status');
+    const counter=document.getElementById('counter');
+
+    const NOTES_KEY = `mw_notes::${location.pathname}`;
+    const POS_KEY = `mw_notes_pos::${location.pathname}`;
+
+    function openNotes(){ notesWin.classList.add('open'); toggleNotes.setAttribute('aria-pressed','true'); notesText.focus(); }
+    function closeNotesWin(){ notesWin.classList.remove('open'); toggleNotes.setAttribute('aria-pressed','false'); }
+
+    toggleNotes.addEventListener('click', ()=> notesWin.classList.contains('open') ? closeNotesWin() : openNotes());
+    closeNotes.addEventListener('click', closeNotesWin);
+
+    const saved=localStorage.getItem(NOTES_KEY);
+    if(saved!==null) notesText.value=saved;
+
+    function updateCounter(){ counter.textContent = `${notesText.value.length} caratteri`; }
+    updateCounter();
+
+    let saveTimer=null;
+    notesText.addEventListener('input', ()=>{
+      updateCounter();
+      statusEl.textContent='Scrivendo…';
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(()=>{
+        localStorage.setItem(NOTES_KEY, notesText.value);
+        statusEl.textContent='Salvato';
+      }, 350);
+    });
+
+    exportTxt.addEventListener('click', ()=>{
+      const blob=new Blob([notesText.value], {type:'text/plain;charset=utf-8'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      const base=(location.pathname.split('/').pop()||'appunti').replace('.html','');
+      a.download = `${base}-appunti.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+    });
+
+    clearNotes.addEventListener('click', ()=>{
+      if(!confirm('Vuoi cancellare gli appunti di questa lezione?')) return;
+      notesText.value='';
+      localStorage.removeItem(NOTES_KEY);
+      updateCounter();
+      statusEl.textContent='Cancellato';
+    });
+
+    // Drag + save position
+    let ndrag={active:false, startX:0, startY:0, startLeft:0, startTop:0};
+    const posSaved=localStorage.getItem(POS_KEY);
+    if(posSaved){
+      try{
+        const p=JSON.parse(posSaved);
+        notesWin.style.left = p.left+'px';
+        notesWin.style.top  = p.top+'px';
+        notesWin.style.right='auto';
+        notesWin.style.bottom='auto';
+      }catch(e){}
+    }
+
+    notesDrag.addEventListener('pointerdown',(e)=>{
+      ndrag.active=true;
+      const r=notesWin.getBoundingClientRect();
+      ndrag.startX=e.clientX; ndrag.startY=e.clientY;
+      ndrag.startLeft=r.left; ndrag.startTop=r.top;
+      notesDrag.setPointerCapture(e.pointerId);
+      notesWin.style.left=r.left+'px';
+      notesWin.style.top=r.top+'px';
+      notesWin.style.right='auto'; notesWin.style.bottom='auto';
+    });
+    notesDrag.addEventListener('pointermove',(e)=>{
+      if(!ndrag.active) return;
+      const dx=e.clientX-ndrag.startX, dy=e.clientY-ndrag.startY;
+      const r=notesWin.getBoundingClientRect(), w=r.width, h=r.height;
+      notesWin.style.left = clamp(ndrag.startLeft+dx, 8, window.innerWidth-w-8) + 'px';
+      notesWin.style.top  = clamp(ndrag.startTop +dy, 8, window.innerHeight-h-8) + 'px';
+    });
+    notesDrag.addEventListener('pointerup', ()=>{
+      if(!ndrag.active) return;
+      ndrag.active=false;
+      const r=notesWin.getBoundingClientRect();
+      localStorage.setItem(POS_KEY, JSON.stringify({left: Math.round(r.left), top: Math.round(r.top)}));
+    });
+    notesDrag.addEventListener('pointercancel', ()=>ndrag.active=false);
+
+    // Close popup with ESC
+    window.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape'){
+        if(imgPop.classList.contains('open')) closeImagePop();
+        if(notesWin.classList.contains('open')) closeNotesWin();
+        showImage();
+      }
+    });
+  </script>
+
+<script src="pwa.js" defer></script>
+
+</body>
+</html>
