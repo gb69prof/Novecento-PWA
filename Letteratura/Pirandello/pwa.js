@@ -1,25 +1,33 @@
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').then(reg => {
+
+(() => {
+  if (!('serviceWorker' in navigator)) return;
+  let refreshing = false;
+  const banner = () => document.getElementById('updateBanner');
+  const showBanner = (worker) => {
+    const el = banner();
+    if (!el) return;
+    el.classList.add('show');
+    document.getElementById('reloadAppBtn')?.addEventListener('click', () => worker?.postMessage({ type: 'SKIP_WAITING' }), { once:true });
+    document.getElementById('dismissUpdateBtn')?.addEventListener('click', () => el.classList.remove('show'), { once:true });
+  };
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./service-worker.js');
+      if (reg.waiting) showBanner(reg.waiting);
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
+        if (!newWorker) return;
         newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            const banner = document.createElement('div');
-            banner.style.position = 'fixed';
-            banner.style.bottom = '0';
-            banner.style.left = '0';
-            banner.style.right = '0';
-            banner.style.background = '#961B2B';
-            banner.style.color = 'white';
-            banner.style.padding = '1rem';
-            banner.style.textAlign = 'center';
-            banner.innerHTML = 'Aggiornamento disponibile <button id="reloadBtn">Ricarica</button>';
-            document.body.appendChild(banner);
-            document.getElementById('reloadBtn').onclick = () => location.reload();
-          }
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) showBanner(newWorker);
         });
       });
-    });
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+    } catch (err) {
+      console.error('SW registration failed', err);
+    }
   });
-}
+})();
