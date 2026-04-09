@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luigi Pirandello – PWA didattica</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#151c22">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pirandello">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+  <script src="highlight.js" defer></script>
+  <script src="pwa.js" defer></script>
+</head>
+<body data-page="index.html" data-title="Luigi Pirandello">
+  <header class="topbar"><div class="topbar-inner"><a class="brand" href="index.html"><div class="brand-mark"><span>P</span></div><div class="brand-copy"><small>PWA didattica</small><strong>Luigi Pirandello</strong></div></a><div class="top-actions"><div data-lesson-dropdown></div><button class="btn secondary" type="button" data-focus-toggle><span>Modalità concentrazione</span></button><a class="btn secondary" href="#lezioni">Indice lezioni</a><a class="btn" href="#mappe">Apri le mappe</a></div></div></header>
+  <main class="shell">
+    <section class="hero"><div class="card hero-copy"><div class="eyebrow">Percorso completo • 10 lezioni • PWA installabile</div><h1>Pirandello: forma, maschera, identità.</h1><p>Questa PWA ricostruisce l’intero percorso su Luigi Pirandello nella stessa architettura didattica: lezioni autonome, mappe come rinforzo visivo, evidenziazione del testo, appunti integrati e modalità concentrazione.</p><section class="hero-tools" aria-label="Funzioni didattiche"><div class="mini"><strong>Evidenzia</strong><span>Seleziona il testo nelle lezioni, salvalo e ritrovalo al prossimo accesso.</span></div><div class="mini"><strong>Appunti</strong><span>Aggiungi un passaggio direttamente alle tue note con riferimento alla lezione e orario.</span></div><div class="mini"><strong>Concentrazione</strong><span>Riduci le distrazioni e mantieni la modalità anche dopo il refresh.</span></div><div class="mini"><strong>PWA</strong><span>Installabile, offline per la shell dell’app, pronta per GitHub Pages.</span></div></section></div><figure class="card media-frame cover-frame"><div class="portrait-wrap"><div class="yt-embed" data-youtube-id="5sX8sMG4FcI" data-title="Luigi Pirandello" style="position:relative;width:100%;padding-top:177.78%;border-radius:22px;overflow:hidden;background:#111;"></div></div><figcaption class="media-caption">Un percorso didattico unitario: visione del mondo, umorismo, romanzi, teatro, novelle e conclusione.</figcaption></figure></section>
+    <section class="card install-note"><strong>Struttura didattica unificata</strong><p>La sezione Pirandello adotta la stessa ossatura tecnica e funzionale della famiglia PWA: ordine di lettura, strumenti attivi e navigazione coerente.</p></section>
+    <section class="section-head" id="lezioni"><div><h2>Indice delle lezioni</h2><p>Una pagina per ogni nucleo del percorso.</p></div></section>
+    <div class="card library-bar"><div><div class="library-title">Orientamento rapido</div><p>Cerca una lezione per titolo o tema e riprendi il filo del percorso.</p></div><div class="library-actions"><input type="search" class="library-search" placeholder="Cerca una lezione..." aria-label="Cerca una lezione"><div class="library-count" data-library-count></div></div></div>
+    <section class="lesson-grid">      <a class="card lesson-card" href="1-pirandello-visione-del-mondo.html"><div class="k">Lezione 01</div><h3>Pirandello – Visione del mondo</h3><p>Vita, forma, maschera e crisi dell’identità nella modernità.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="2-pirandello-umorismo.html"><div class="k">Lezione 02</div><h3>Pirandello – L’umorismo</h3><p>Avvertimento e sentimento del contrario: la poetica umoristica.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="3-pirandello-fu-mattia-pascal.html"><div class="k">Lezione 03</div><h3>Pirandello – Il fu Mattia Pascal</h3><p>Identità, fuga, maschere sociali e impossibilità di rinascere.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="4-pirandello-uno-nessuno-centomila.html"><div class="k">Lezione 04</div><h3>Pirandello – Uno, nessuno e centomila</h3><p>Frantumazione dell’io e dissoluzione dell’identità personale.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="5-pirandello-cosi-e-se-vi-pare.html"><div class="k">Lezione 05</div><h3>Pirandello – Così è (se vi pare)</h3><p>Relatività della verità e conflitto tra apparenza e realtà.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="6-pirandello-sei-personaggi.html"><div class="k">Lezione 06</div><h3>Pirandello – Sei personaggi in cerca d’autore</h3><p>Teatro nel teatro, metateatro e crisi della rappresentazione.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="7-pirandello-novelle.html"><div class="k">Lezione 07</div><h3>Pirandello – Novelle</h3><p>Il laboratorio narrativo del quotidiano e delle maschere.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="8-pirandello-romanzi.html"><div class="k">Lezione 08</div><h3>Pirandello – Romanzi</h3><p>Le strutture narrative dei romanzi e le loro ossessioni tematiche.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="9-pirandello-teatro.html"><div class="k">Lezione 09</div><h3>Pirandello – Teatro</h3><p>Forma scenica, conflitto e rivoluzione del linguaggio teatrale.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+      <a class="card lesson-card" href="10-pirandello-conclusione.html"><div class="k">Lezione 10</div><h3>Pirandello – Conclusione</h3><p>Sintesi del percorso: forma, maschera, incomunicabilità e modernità.</p><div class="go"><span>Apri pagina</span><span>→</span></div></a>
+    </section>
+    <section class="section-head maps-head" id="mappe"><div><h2>Mappe concettuali</h2><p>Ogni schema è pensato come rinforzo visivo del testo, non come decorazione.</p></div></section>
+    <section class="index-maps">      <article class="card map-tile"><img src="assets/Mondo-Pirandello.png" alt="Schema: visione del mondo"><div class="body"><div class="k">Schema</div><h3>Pirandello – Visione del mondo</h3><p>Vita, forma, maschera e crisi dell’identità nella modernità.</p></div></article>
+      <article class="card map-tile"><img src="assets/Umorismo-Pirandello.jpeg.png" alt="Mappa: umorismo"><div class="body"><div class="k">Schema</div><h3>Pirandello – L’umorismo</h3><p>Avvertimento e sentimento del contrario: la poetica umoristica.</p></div></article>
+      <article class="card map-tile"><img src="assets/Mattia-Pirandello.jpeg.png" alt="Mappa: Il fu Mattia Pascal"><div class="body"><div class="k">Schema</div><h3>Pirandello – Il fu Mattia Pascal</h3><p>Identità, fuga, maschere sociali e impossibilità di rinascere.</p></div></article>
+      <article class="card map-tile"><img src="assets/Uno-nessuno-centomila.png" alt="Mappa: Uno, nessuno e centomila"><div class="body"><div class="k">Schema</div><h3>Pirandello – Uno, nessuno e centomila</h3><p>Frantumazione dell’io e dissoluzione dell’identità personale.</p></div></article>
+      <article class="card map-tile"><img src="assets/Cosi2.png" alt="Mappa: Così è (se vi pare)"><div class="body"><div class="k">Schema</div><h3>Pirandello – Così è (se vi pare)</h3><p>Relatività della verità e conflitto tra apparenza e realtà.</p></div></article>
+      <article class="card map-tile"><img src="assets/Sei-1.png" alt="Mappa: Sei personaggi"><div class="body"><div class="k">Schema</div><h3>Pirandello – Sei personaggi in cerca d’autore</h3><p>Teatro nel teatro, metateatro e crisi della rappresentazione.</p></div></article>
+      <article class="card map-tile"><img src="assets/IMG_3679.png" alt="Percorso novelle"><div class="body"><div class="k">Schema</div><h3>Pirandello – Novelle</h3><p>Il laboratorio narrativo del quotidiano e delle maschere.</p></div></article>
+      <article class="card map-tile"><img src="assets/IMG_3697.jpeg" alt="Percorso romanzi"><div class="body"><div class="k">Schema</div><h3>Pirandello – Romanzi</h3><p>Le strutture narrative dei romanzi e le loro ossessioni tematiche.</p></div></article>
+      <article class="card map-tile"><img src="assets/IMG_3728.jpeg" alt="Percorso teatro"><div class="body"><div class="k">Schema</div><h3>Pirandello – Teatro</h3><p>Forma scenica, conflitto e rivoluzione del linguaggio teatrale.</p></div></article>
+      <article class="card map-tile"><img src="assets/Conclusione.png" alt="Mappa conclusiva"><div class="body"><div class="k">Schema</div><h3>Pirandello – Conclusione</h3><p>Sintesi del percorso: forma, maschera, incomunicabilità e modernità.</p></div></article>
+    </section>
+    <section class="card install-note install-footnote">Su Android puoi installarla dal menu di Chrome. Su iPhone e iPad usa <strong>Condividi → Aggiungi a Home</strong>. La shell dell’app resta disponibile anche offline.</section>
+  </main>
+  <footer class="footer">PWA didattica dedicata a Luigi Pirandello</footer>
+  <button class="btn focus-exit" id="focusExitBtn" hidden>Esci dalla modalità concentrazione</button>
+  <div class="update-banner" id="updateBanner" aria-live="polite"><strong>Aggiornamento disponibile</strong><div style="display:flex; gap:10px; flex-wrap:wrap"><button class="btn" id="reloadAppBtn">Ricarica</button><button class="btn secondary" id="dismissUpdateBtn">Dopo</button></div></div>
+</body></html>
